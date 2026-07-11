@@ -30,11 +30,40 @@ ul{margin:5px 0;padding-left:20px}li{margin:4px 0;font-size:.92rem}
 .scen div{flex:1 1 240px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bl);border-radius:9px;padding:9px 12px;font-size:.87rem}
 .scen b{color:var(--bl)}@media(prefers-color-scheme:dark){.scen b{color:#8ab8e0}}
 .foot{color:var(--muted);font-size:.8rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff;font-weight:700}
+td.wt{white-space:nowrap;font-weight:700;color:var(--accent)}
+.donebadge{display:inline-block;background:var(--okbg);color:var(--ok);border-radius:12px;padding:0 8px;font-size:.75rem;font-weight:700}
+ol.path li a{font-weight:700}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
 <div class="top"><h1>🎯 CCAR-F 攻略速記卡</h1><p>Claude Certified Architect – Foundations · 5 域 · 60 題 / 120 分 / 720 過 / $125。情境題導向：官方 6 情境抽 4。重點在<b>抓「錯誤選項(anti-pattern)」</b>——這張證最愛考「哪個做法是錯的」。</p></div>
 
 <div class="note">💡 <b>為什麼這張適合你</b>：5 域全是技術核心（agent 架構 / MCP / Claude Code / prompt / context），<b>沒有合規、沒有利害關係人、沒有 lifecycle</b>——你日常在做的事。準備成本近乎零，主要是對齊官方用語與記住下面的 anti-pattern。</div>
+
+<h2 class="ch">📚 CCAR-F 課程準備清單（照順序上）</h2>
+<div class="card">全部是 Anthropic Academy <b>免費</b>官方課，點課名進 Enroll（首次要 email 註冊 skilljar）。這是<b>針對 CCAR-F 篩過</b>的 7 門，非全部 20 門。
+<ol class="path" style="list-style:decimal;padding-left:22px;margin:8px 0">
+<li><a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">Introduction to Subagents</a> <span class="donebadge">✓ 已有筆記</span> — D1/D5</li>
+<li><a href="https://anthropic.skilljar.com/introduction-to-model-context-protocol" target="_blank">Introduction to Model Context Protocol</a> — D2</li>
+<li><a href="https://anthropic.skilljar.com/model-context-protocol-advanced-topics" target="_blank">MCP: Advanced Topics</a> — D2</li>
+<li><a href="https://anthropic.skilljar.com/introduction-to-agent-skills" target="_blank">Introduction to Agent Skills</a> — D2（Skills）</li>
+<li><a href="https://anthropic.skilljar.com/claude-code-101" target="_blank">Claude Code 101</a> — D3</li>
+<li><a href="https://anthropic.skilljar.com/claude-code-in-action" target="_blank">Claude Code in Action</a> — D3/D5</li>
+<li><a href="https://anthropic.skilljar.com/claude-with-the-anthropic-api" target="_blank">Building with the Claude API</a> — D4（tool_use + JSON schema）</li>
+</ol>
+</div>
+<div class="card"><b>5 考域 → 官方課程對應</b>
+<table>
+<tr><th>考域</th><th>配分</th><th>對應官方課程</th><th>筆記</th></tr>
+<tr><td>1. Agentic Architecture &amp; Orchestration</td><td class="wt">27%</td><td><a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">Subagents</a> · <a href="https://anthropic.skilljar.com/claude-with-the-anthropic-api" target="_blank">Building with API</a>（agent loop）</td><td><a href="notes.html#subagents">✓ Subagents</a></td></tr>
+<tr><td>2. Tool Design &amp; MCP Integration</td><td class="wt">18%</td><td><a href="https://anthropic.skilljar.com/introduction-to-model-context-protocol" target="_blank">MCP 入門</a> · <a href="https://anthropic.skilljar.com/model-context-protocol-advanced-topics" target="_blank">MCP 進階</a> · <a href="https://anthropic.skilljar.com/introduction-to-agent-skills" target="_blank">Agent Skills</a></td><td>—</td></tr>
+<tr><td>3. Claude Code Configuration &amp; Workflows</td><td class="wt">20%</td><td><a href="https://anthropic.skilljar.com/claude-code-101" target="_blank">Claude Code 101</a> · <a href="https://anthropic.skilljar.com/claude-code-in-action" target="_blank">Claude Code in Action</a></td><td>—</td></tr>
+<tr><td>4. Prompt Engineering &amp; Structured Output</td><td class="wt">20%</td><td><a href="https://anthropic.skilljar.com/claude-with-the-anthropic-api" target="_blank">Building with API</a> · <a href="https://anthropic.skilljar.com/claude-platform-101" target="_blank">Claude Platform 101</a></td><td>—</td></tr>
+<tr><td>5. Context Management &amp; Reliability</td><td class="wt">15%</td><td><a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">Subagents</a>（context 隔離）· <a href="https://anthropic.skilljar.com/claude-code-in-action" target="_blank">Claude Code in Action</a></td><td><a href="notes.html#subagents">✓ Subagents</a></td></tr>
+</table>
+<span style="color:var(--muted);font-size:.83rem">每上完一門 → 把課程內容貼給我收整成 <a href="notes.html">課程筆記</a>，並回來把「筆記」欄補成 ✓。</span></div>
 
 <h2 class="ch">📋 6 大官方情境（抽 4 上場）</h2>
 <div class="card"><div class="scen">
