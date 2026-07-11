@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Domain 5 法規概念卡</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;--pu:#7c3aed;--pubg:#f0e9fb;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;--pubg:#26193a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16.5px}
+.wrap{max-width:840px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.28rem}.top p{margin:0;opacity:.94;font-size:.88rem}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:26px 0 8px;font-size:1.12rem}
+.note{background:var(--badbg);border-left:4px solid var(--bad);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.88rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 17px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.04);border-left:5px solid var(--accent)}
+.card h3{margin:0 0 3px;font-size:1.08rem}
+.card .full{font-size:.82rem;color:var(--muted);margin:0 0 9px}
+.card .flag{float:right;font-size:1.3rem}
+.row{display:flex;gap:9px;margin:6px 0;font-size:.93rem}
+.row .k{flex:0 0 auto;width:74px;font-weight:700;color:var(--accent)}
+.hook{background:var(--ybg);border-radius:8px;padding:7px 11px;margin-top:9px;font-size:.88rem}
+.hook b{color:var(--y)}
+table{width:100%;border-collapse:collapse;font-size:.86rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff;font-weight:700}
+td.reg{font-weight:700;color:var(--accent)}
+.pill{display:inline-block;border-radius:12px;padding:1px 8px;font-size:.72rem;font-weight:700}
+.geo-eu{background:var(--blbg);color:var(--bl)}.geo-us{background:var(--okbg);color:var(--ok)}.geo-glob{background:var(--pubg);color:var(--pu)}
+@media(prefers-color-scheme:dark){.geo-eu{color:#8ab8e0}.geo-glob{color:#b794e6}}
+.foot{color:var(--muted);font-size:.82rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>⚖️ Domain 5 法規概念卡</h1><p>CCAR-P 唯一「官方不教」的缺口。考試只要<b>概念層級</b>：哪個法管什麼、何時觸發、對 Claude 架構師的意義。你不是律師，別背條文。</p></div>
+<div class="note">🎯 <b>考試怎麼考</b>：給一個情境（「歐盟用戶個資」「美國病歷」「聯邦機構採雲端」），問「適用哪個法規」或「該做什麼保護」。<b>辨識 + 配對</b>就夠。下方 5 張卡背熟 + 最後決策表掃過，這域就穩。</div>
+
+<h2 class="ch">🔑 三大主角（考綱明列 e.g.）</h2>
+
+<div class="card"><span class="flag">🇪🇺</span><h3>GDPR</h3><p class="full">General Data Protection Regulation · 歐盟一般資料保護規則</p>
+<div class="row"><span class="k">管什麼</span><span>歐盟／EEA 居民的<b>個人資料</b>（PII）如何蒐集、處理、儲存、跨境傳輸。</span></div>
+<div class="row"><span class="k">觸發</span><span>只要處理<b>歐盟居民</b>個資就適用——<b>不管你公司在哪</b>（域外效力）。</span></div>
+<div class="row"><span class="k">對 Claude</span><span>送進 prompt 的歐盟用戶個資要有法律依據、可刪除（被遺忘權）、資料最小化；選<b>零資料保留(ZDR)</b>、避免用其訓練。</span></div>
+<div class="hook"><b>記憶鉤</b>：GDPR = <b>歐盟 + 任何個資</b>。看到「EU / 歐洲用戶 / personal data」→ GDPR。罰則最重（全球營收 4%）。</div></div>
+
+<div class="card"><span class="flag">🏥</span><h3>HIPAA</h3><p class="full">Health Insurance Portability and Accountability Act · 美國</p>
+<div class="row"><span class="k">管什麼</span><span>美國<b>受保護健康資訊(PHI)</b>——病歷、診斷、健保資料的隱私與安全。</span></div>
+<div class="row"><span class="k">觸發</span><span>美國醫療機構／保險／其 business associate 處理 <b>PHI</b> 時。</span></div>
+<div class="row"><span class="k">對 Claude</span><span>要用 Claude 碰 PHI，必須先跟 Anthropic 簽 <b>BAA</b>（Business Associate Agreement）；Anthropic 對 API / Enterprise 願簽。</span></div>
+<div class="hook"><b>記憶鉤</b>：HIPAA = <b>美國 + 病歷(PHI)</b>。看到「patient / health records / PHI」→ HIPAA → 關鍵字 <b>BAA</b>。</div></div>
+
+<div class="card"><span class="flag">🏛️</span><h3>FedRAMP</h3><p class="full">Federal Risk and Authorization Management Program · 美國</p>
+<div class="row"><span class="k">管什麼</span><span>美國<b>聯邦政府</b>採用<b>雲端服務</b>的統一安全評估與授權標準。</span></div>
+<div class="row"><span class="k">觸發</span><span>美國聯邦機構要採購／使用某個雲端 AI 服務時，該服務須具 FedRAMP 授權(ATO)。</span></div>
+<div class="row"><span class="k">對 Claude</span><span>賣給美國聯邦客戶 → 該部署／雲端需符合 FedRAMP 對應等級（Low/Moderate/High）。</span></div>
+<div class="hook"><b>記憶鉤</b>：FedRAMP = <b>美國聯邦 + 雲端授權</b>。看到「federal agency / government + cloud」→ FedRAMP。它是<b>授權框架不是隱私法</b>。</div></div>
+
+<h2 class="ch">🃏 兩個最愛當「誘答」的鄰居</h2>
+
+<div class="card" style="border-left-color:var(--muted)"><h3>CCPA / CPRA</h3><p class="full">California Consumer Privacy Act · 美國加州</p>
+<div class="row"><span class="k">管什麼</span><span><b>加州居民</b>的個資與消費者隱私權（知情、刪除、拒絕出售）。</span></div>
+<div class="row"><span class="k">別混</span><span>CCPA = <b>美國加州版的 GDPR</b>。題目若說「美國聯邦採雲端」選它就錯（那是 FedRAMP）；說「加州消費者個資」才是它。</span></div></div>
+
+<div class="card" style="border-left-color:var(--muted)"><h3>PCI-DSS</h3><p class="full">Payment Card Industry Data Security Standard · 全球業界標準</p>
+<div class="row"><span class="k">管什麼</span><span><b>信用卡／支付卡</b>資料的安全。</span></div>
+<div class="row"><span class="k">別混</span><span>看到「病歷」選它就錯（那是 HIPAA）。只有<b>刷卡／付款卡號</b>才是 PCI-DSS。它是<b>業界標準不是法律</b>。</span></div></div>
+
+<h2 class="ch">🛡️ Anthropic 這邊的合規招牌（實務判斷題吃這個）</h2>
+<div class="card" style="border-left-color:var(--ok)">
+<div class="row"><span class="k">BAA</span><span>碰 PHI 的入場券 → HIPAA 情境的正解關鍵字。</span></div>
+<div class="row"><span class="k">ZDR</span><span>零資料保留：Messages / Token Counting API 可不留存 → GDPR / 敏感資料情境的降險手段。</span></div>
+<div class="row"><span class="k">預設不訓練</span><span>商業條款下預設<b>不拿你的資料訓練模型</b>。</span></div>
+<div class="row"><span class="k">認證</span><span><b>SOC 2 Type II</b>（安控稽核）、<b>ISO 27001</b>（資安管理）、<b>ISO 42001</b>（AI 管理系統，Anthropic 早期取得者之一）。</span></div>
+<div class="row"><span class="k">查證</span><span>官方 <a href="https://trust.anthropic.com/" target="_blank">trust.anthropic.com</a>（正式 SOC 2 報告要簽 NDA 走 enterprise sales）。</span></div>
+</div>
+
+<h2 class="ch">🎯 情境 → 適用法規（辨識速查）</h2>
+<table>
+<tr><th>情境關鍵字</th><th>選這個</th><th>連帶動作</th></tr>
+<tr><td>歐盟／歐洲用戶的 personal data</td><td class="reg">GDPR <span class="pill geo-eu">EU</span></td><td>法律依據、可刪除、資料最小化、ZDR</td></tr>
+<tr><td>美國病歷 / 診斷 / PHI</td><td class="reg">HIPAA <span class="pill geo-us">US</span></td><td>先簽 <b>BAA</b></td></tr>
+<tr><td>美國聯邦機構採購雲端 AI</td><td class="reg">FedRAMP <span class="pill geo-us">US</span></td><td>取得對應等級 ATO 授權</td></tr>
+<tr><td>加州消費者個資 / 拒絕出售</td><td class="reg">CCPA <span class="pill geo-us">US-CA</span></td><td>知情、刪除、opt-out</td></tr>
+<tr><td>信用卡 / 支付卡號</td><td class="reg">PCI-DSS <span class="pill geo-glob">業界</span></td><td>付款資料隔離、加密</td></tr>
+<tr><td>「證明我們的安控有被稽核」</td><td class="reg">SOC 2 <span class="pill geo-glob">稽核</span></td><td>索取 Type II 報告（NDA）</td></tr>
+<tr><td>「有沒有 AI 治理管理系統認證」</td><td class="reg">ISO 42001 <span class="pill geo-glob">AI 治理</span></td><td>Trust Center 佐證</td></tr>
+</table>
+
+<div class="note" style="background:var(--ybg);border-color:var(--y)">💡 <b>一句話心法</b>：先看<b>地理</b>（EU→GDPR、US-federal→FedRAMP、CA→CCPA），再看<b>資料型別</b>（病歷→HIPAA+BAA、卡號→PCI-DSS）。兩刀切完幾乎能秒選。</div>
+
+<div class="foot">Domain 5 法規概念卡 · 考試概念層級整理，非法律意見 · Anthropic 合規事實來源：trust.anthropic.com</div>
+</div></body></html>
