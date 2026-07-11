@@ -41,7 +41,7 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 <div class="d"><b>0</b>D1 Agentic Architecture</div>
 <div class="d"><b>0</b>D2 Tool/MCP</div>
 <div class="d"><b>0</b>D3 Claude Code</div>
-<div class="d hot"><b>3</b>D4 Evaluation ← 主要弱點</div>
+<div class="d hot"><b>4</b>D4 Eval + Prompt ← 主要弱點</div>
 <div class="d"><b>0</b>D5 Context/Reliability</div>
 </div>
 <div class="note">🎯 <b>目前唯一有實證的弱點 = Domain 4（Evaluation, Testing &amp; Optimization）</b>。回去看 <a href="notes-building-api.html#c">模組 C 的 eval 卡</a> 補這塊。</div>
@@ -67,6 +67,13 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 <div class="qt">哪一種 grader 是「用另一個 AI 模型」來評估輸出品質？</div>
 <div class="ans">✅ 正解：<b>Model grader</b></div>
 <div class="why">三種 grader：<b>Code grader</b>=程式檢查(語法/長度/valid)；<b>Model grader</b>=<b>另發一次 API 讓模型評分</b>(最有彈性)；<b>Human grader</b>=人工。別跟 code/syntax grader 搞混。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Engineering 隨堂</span></div>
+<div class="qt">「提供 sample input/output 配對來引導 AI 回應」是哪個 prompt 技巧？</div>
+<div class="ans">✅ 正解：<b>One-shot / Multi-shot prompting</b></div>
+<div class="why">給範例=shot：<b>one-shot</b>=1 個範例、<b>multi-shot</b>=多個。別跟 <b>XML structuring</b>(分隔內容區塊)或 <b>iterative refinement</b>(反覆修)搞混——關鍵字「sample input/output 配對」就是 shot。</div>
 </div>
 
 <div class="foot">CCAR-F 錯題本 · 邊上課邊累積 · 上完把錯題貼給我即歸類</div>
