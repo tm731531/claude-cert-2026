@@ -38,13 +38,13 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 
 <h2 class="ch">📊 各域錯題統計（弱點雷達）</h2>
 <div class="tally">
-<div class="d"><b>1</b>D1 Agentic（已修 3/4 ✅）</div>
+<div class="d"><b>2</b>D1（evaluator-opt + env-inspect）</div>
 <div class="d hot"><b>4</b>D2 Tool/MCP ← 弱點</div>
 <div class="d"><b>0</b>D3 Claude Code</div>
 <div class="d hot"><b>4</b>D4 Eval + Prompt ← 主要弱點</div>
 <div class="d"><b>0</b>D5 Context/Reliability</div>
 </div>
-<div class="note">🎯 <b>弱點：D2(4) + D4(4) 為主，D1 重考已修到剩 1。</b> D1 進步證明「補了就有效」。剩下主攻 <b>D2(MCP 三件套)</b> 和 <b>D4(eval 概念)</b>，各佔 CCAR-F 18%/16%。補法:D2→<a href="notes-building-api.html#g">模組 G/D</a>、D4→<a href="notes-building-api.html#c">模組 C</a>、D1 只差 evaluator-optimizer 一個名字。</div>
+<div class="note">🎯 <b>弱點已收斂成 3 個「名詞」</b>（不是整個域）：<br>① <b>Model grader</b>（D4，❗連錯 2 次）= 另一個 AI 模型評分<br>② <b>Evaluator-Optimizer</b>（D1，❗連錯 2 次）= 檢查+改進迴圈<br>③ <b>Environment Inspection</b>（D1）= agent 觀察自己動作的結果<br>MCP(D2)綜合 quiz 已全對、workflow-vs-agent 也過關。<b>剩這 3 個名詞背死 = 幾乎滿分。</b></div>
 
 <h2 class="ch">📝 錯題清單</h2>
 
@@ -55,6 +55,13 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 <div class="qt">寫報告 → 檢查夠不夠好 → 不夠就改進。這是什麼 pattern？</div>
 <div class="ans">✅ 正解：<b>Evaluator-Optimizer</b></div>
 <div class="why">🟡 <b>你最頑固的一題</b>：producer 產出 → <b>evaluator 評 → 不過就 loop 回去改</b>。關鍵詞「檢查+改進迴圈」= Evaluator-Optimizer。別選 chaining(那是純序列、不回頭)。<b>這個名字背死它。</b></div>
+</div>
+
+<div class="q" style="border-left-color:var(--y)">
+<div class="meta"><span class="dchip" style="background:var(--ybg);color:var(--y)">D1</span><span class="src">綜合 quiz · Q21</span></div>
+<div class="qt">為什麼 Environment Inspection（環境檢查）對 agent 至關重要？</div>
+<div class="ans">✅ 正解：<b>讓 agent 觀察並理解「自己動作的結果」</b></div>
+<div class="why">agent 無法預測點按鈕/改檔的結果 → 每個動作後要<b>檢查環境</b>(截圖、讀檔)才知進度、抓錯、適應。不是為了「更快/更省/簡化工具」。</div>
 </div>
 
 <div class="note" style="font-size:.85rem">✅ <b>已攻克(重考訂正)</b>：Q3 不同內容→<b>Routing</b>;Q6 要可靠→<b>Workflow</b>;Q7 步驟已知→<b>Workflow with predetermined steps</b>。workflow-vs-agent 陷阱已過關。</div>
@@ -75,7 +82,7 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 </div>
 
 <div class="q">
-<div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Eval 隨堂</span></div>
+<div class="meta"><span class="dchip" style="background:var(--ybg);color:var(--y)">D4 · ❗連錯 2 次</span><span class="src">Prompt Eval + 綜合 Q8</span></div>
 <div class="qt">哪一種 grader 是「用另一個 AI 模型」來評估輸出品質？</div>
 <div class="ans">✅ 正解：<b>Model grader</b></div>
 <div class="why">三種 grader：<b>Code grader</b>=程式檢查(語法/長度/valid)；<b>Model grader</b>=<b>另發一次 API 讓模型評分</b>(最有彈性)；<b>Human grader</b>=人工。別跟 code/syntax grader 搞混。</div>
