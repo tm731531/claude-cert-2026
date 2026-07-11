@@ -115,6 +115,11 @@ usage：<code>cache_creation_input_tokens</code>(首次寫)/<code>cache_read_inp
 <div class="key">判準：<b>步驟清楚→workflow；細節不明→agent</b>。</div>
 <ul><li><b>Workflow</b>=為特定問題、步驟預定的一連串 Claude 呼叫。模式：<b>Chaining</b>(拆序列步驟，破解 constraint-heavy prompt)、<b>Parallelization</b>(拆平行子任務→aggregator 合)、<b>Routing</b>(先分類→路由到專門 pipeline)、<b>Evaluator-Optimizer</b>(producer 產→evaluator 評→loop 到接受，如 圖→3D 模型)。</li><li><b>Agent</b>=自己擬計畫、用工具完成任務(細節不明時用)。</li></ul>
 <b>關鍵</b>：認出 pattern ≠ 自動實作，仍要寫 code。</div>
+<div class="card"><b class="t">Agent 工具設計原則</b><span class="dchip">D1</span><span class="dchip">D2</span> 給 agent <b>通用/抽象</b>工具(bash、web_fetch、file_write)，不是超專用(refactor_tool、install_dependencies)。<b>小組彈性工具創意組合</b> → 動態解題+意外用途。範例：get_datetime+add_duration+set_reminder 可組出各種時間任務。</div>
+<div class="card"><b class="t">Environment Inspection</b><span class="dchip">D1</span> agent 每個動作後要<b>檢查環境+動作結果</b>才知進度/抓錯(無法預測按鈕點下去的結果)。computer use 每動作後截圖；改檔前先讀現況。讓 agent 不盲目操作、能適應意外。</div>
+<div class="card"><b class="t">Workflow vs Agent（取捨）</b><span class="dchip">D1</span>
+<div class="key">步驟已知→workflow；步驟未知→agent。</div>
+workflow：拆小子任務、<b>易測</b>(執行序已知)、<b>成功率高</b>、需特定輸入。agent：創意應變、<b>難測</b>(路徑不可測)、<b>成功率較低</b>、自產輸入可要更多資訊。<b>建議：優先 workflow 求可靠，真的需要彈性才用 agent。先可靠解決問題，創新其次(用戶要 100% 能動的產品，不是花俏 agent)。</b></div>
 
 <h2 class="ch" id="exam">🎯 考點對照</h2>
 <div class="exam"><b>對 CCAR-F（你的目標）</b>：

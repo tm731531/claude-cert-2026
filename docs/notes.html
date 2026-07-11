@@ -182,6 +182,16 @@ code review 範例輸出格式：
 <tr><td>Research / 探索<br>Code review<br>需要 custom system prompt 的任務</td><td>沒有真本事的「專家」人設<br>每步依賴前一步的多階段 pipeline<br>跑測試（你需要完整輸出 debug）</td></tr>
 </table></div>
 
+<h3>🔟 澄清：三種 subagent 來源 + AGENTS.md ≠ .claude/agents</h3>
+<div class="card"><table>
+<tr><th>來源</th><th>是什麼</th><th>特點</th><th>考點</th></tr>
+<tr><td><b>靜態檔</b> <code>.claude/agents/*.md</code></td><td>課堂教的，預先定義</td><td>可重用、description 自動委派、版控分享、<code>/agents</code> 管理</td><td>D3</td></tr>
+<tr><td><b>內建</b></td><td>General / Explore / Plan</td><td>開箱即用</td><td>D1</td></tr>
+<tr><td><b>動態產</b>（Task / Workflow）</td><td>runtime inline 生成，不寫檔</td><td>彈性、一次性、隨任務組</td><td>D1</td></tr>
+</table>
+<div class="key">⚠️ <b>AGENTS.md ≠ <code>.claude/agents/*.md</code></b>：AGENTS.md 是「專案角色/指令文件」(像 CLAUDE.md，跨工具慣例)，<b>不是</b> subagent 機制；<code>.claude/agents/*.md</code> 才是 Claude Code 能 spawn 的 subagent 定義。<b>考卷問 subagent 時別把 AGENTS.md 拉進來答。</b></div>
+<div style="background:var(--badbg);border-left:4px solid var(--bad);border-radius:8px;padding:9px 13px;margin:8px 0;font-size:.9rem">🔴 <b>Tom 的盲點</b>：一直靠<b>動態產</b>(Domain 1)+ 寫 <b>AGENTS.md</b> 選角，但<b>從沒用過靜態 <code>.claude/agents/*.md</code></b>(Domain 3，20%)。補法：在任一專案打 <code>/agents</code> → Create 一個 code-reviewer → 打開產出的檔看 frontmatter(name / description[放 <code>proactively</code> 自動委派] / tools / model / color)。5 分鐘動手勝讀十遍。</div></div>
+
 <div class="exam"><b>🎯 扣 CCAR-F 考點</b>：
 <ul>
 <li><b>Domain 1（1.2/1.3）</b>：subagent context <b>隔離、不繼承</b> parent；<code>Task</code> 工具 spawn、<code>allowedTools</code> 要含 <code>"Task"</code>；context 要在 prompt 明確傳。← 本課「只回摘要、對話丟棄」正是這個。</li>
