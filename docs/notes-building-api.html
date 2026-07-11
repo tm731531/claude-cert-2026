@@ -56,7 +56,13 @@ th{background:var(--accent);color:#fff}
 
 <h2 class="ch" id="b">B. 控制輸出</h2>
 <div class="card"><b class="t">System Prompts</b><span class="dchip">D4</span> 用 <code>system=</code> 傳字串。控制<b>「怎麼回」不是「回什麼」</b>：第一行給角色(You are a patient math tutor)+行為指令。同問題因角色不同而不同對待。None 時整個排除 system 參數。</div>
-<div class="card"><b class="t">Temperature（0–1）</b><span class="dchip">D4</span> 控隨機性。<b>0=deterministic</b>(永選最高機率 token)；高=更創意/意外。低→擷取/事實(一致)；高→腦力激盪/創作。高值只是<b>提高變異機率</b>，不保證不同。</div>
+<div class="card"><b class="t">Temperature（0–1）</b><span class="dchip">D4</span> 控隨機性。<b>0=deterministic</b>(永選最高機率 token)；高=更創意/意外。高值只是<b>提高變異機率</b>，不保證不同。
+<table>
+<tr><th>區間</th><th>適用</th></tr>
+<tr><td><b>低溫 0.0–0.3</b></td><td>事實回應、編碼協助、資料擷取、內容審核</td></tr>
+<tr><td><b>中溫 0.4–0.7</b></td><td>總結、教育內容、問題解決、受限條件下的創意寫作</td></tr>
+<tr><td><b>高溫 0.8–1.0</b></td><td>腦力激盪、創意寫作、行銷內容、笑話產生器</td></tr>
+</table></div>
 <div class="card"><b class="t">Response Streaming</b> chunk-by-chunk 顯示(回應可能 10–30 秒)。事件：<code>message_start</code>→<code>content_block_start</code>→<b><code>content_block_delta</code>(含文字 chunk，最重要)</b>→<code>content_block_stop/message_stop</code>。<code>client.messages.stream()</code> 的 <code>text_stream</code> 取純文字；<code>get_final_message()</code> 組完整訊息存 DB。</div>
 <div class="card"><b class="t">Pre-fill Assistant + Stop Sequences</b><span class="dchip">D4</span>
 <ul><li><b>Pre-fill</b>：在 messages 尾端手動加一則 assistant 訊息 → Claude 從<b>那段結尾接續</b>(要自己把 prefill+回應拼起來)。</li><li><b>Stop sequence</b>：生成到指定字串<b>立即停</b>，該字串<b>不含</b>在輸出。</li></ul></div>
