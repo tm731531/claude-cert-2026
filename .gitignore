@@ -7,3 +7,7 @@ Thumbs.db
 # 例外：GitHub Pages 網站的 HTML 要上傳
 !docs/
 !docs/*.html
+
+# 課程 notebook / 工具：本機用，不上傳公開 repo
+*.ipynb
+/tools/
