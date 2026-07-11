@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCAR-F 攻略速記卡</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.28rem}.top p{margin:0;opacity:.94;font-size:.87rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.86em;font-family:"SF Mono",Menlo,Consolas,monospace}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:26px 0 8px;font-size:1.14rem}
+h2.ch .wt{float:right;background:var(--accent);color:#fff;border-radius:16px;padding:1px 11px;font-size:.82rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 16px;margin:11px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card h3{margin:0 0 6px;font-size:1rem;color:var(--accent2)}
+@media(prefers-color-scheme:dark){.card h3{color:var(--accent)}}
+ul{margin:5px 0;padding-left:20px}li{margin:4px 0;font-size:.92rem}
+.trap{background:var(--badbg);border-left:4px solid var(--bad);border-radius:8px;padding:9px 13px;margin:8px 0;font-size:.9rem}
+.trap b{color:var(--bad)}
+.good{background:var(--okbg);border-left:4px solid var(--ok);border-radius:8px;padding:9px 13px;margin:8px 0;font-size:.9rem}
+.good b{color:var(--ok)}
+.note{background:var(--ybg);border-left:4px solid var(--y);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.88rem}
+.scen{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.scen div{flex:1 1 240px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bl);border-radius:9px;padding:9px 12px;font-size:.87rem}
+.scen b{color:var(--bl)}@media(prefers-color-scheme:dark){.scen b{color:#8ab8e0}}
+.foot{color:var(--muted);font-size:.8rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>🎯 CCAR-F 攻略速記卡</h1><p>Claude Certified Architect – Foundations · 5 域 · 60 題 / 120 分 / 720 過 / $125。情境題導向：官方 6 情境抽 4。重點在<b>抓「錯誤選項(anti-pattern)」</b>——這張證最愛考「哪個做法是錯的」。</p></div>
+
+<div class="note">💡 <b>為什麼這張適合你</b>：5 域全是技術核心（agent 架構 / MCP / Claude Code / prompt / context），<b>沒有合規、沒有利害關係人、沒有 lifecycle</b>——你日常在做的事。準備成本近乎零，主要是對齊官方用語與記住下面的 anti-pattern。</div>
+
+<h2 class="ch">📋 6 大官方情境（抽 4 上場）</h2>
+<div class="card"><div class="scen">
+<div><b>① 客服解決 agent</b>：Agent SDK，處理退款/帳務/爭議，透過 MCP 工具(get_customer/lookup_order/process_refund/escalate_to_human)，目標 80%+ 首解率、知道何時升級。</div>
+<div><b>② Claude Code 產碼</b>：產碼/重構/debug/文件，客製 slash command、CLAUDE.md、plan mode vs 直接執行。</div>
+<div><b>③ 多 agent 研究</b>：coordinator 分派給搜尋/分析/綜合/報告 subagent，產出附引用報告。</div>
+<div><b>④ 開發者生產力</b>：探索陌生 codebase、理解 legacy、產樣板，用內建工具(Read/Write/Bash/Grep/Glob)+ MCP。</div>
+<div><b>⑤ Claude Code CI/CD</b>：自動 code review、產測試、PR 回饋，要可執行回饋、少 false positive。</div>
+<div><b>⑥ 結構化資料擷取</b>：從非結構化文件擷取、用 JSON schema 驗證、高準度、優雅處理 edge case。</div>
+</div></div>
+
+<h2 class="ch">Domain 1 · Agentic Architecture &amp; Orchestration <span class="wt">27%</span></h2>
+<div class="card"><h3>Agent loop 生命週期</h3>
+<ul><li>迴圈條件看 <code>stop_reason</code>：<code>"tool_use"</code> → 繼續（執行工具、把結果 append 回對話）；<code>"end_turn"</code> → 終止。</li></ul>
+<div class="trap"><b>⛔ 陷阱</b>：用自然語言判斷是否該停 / 用「固定迭代上限」當主要停止機制 / 看助手有沒有輸出文字當完成訊號——<b>這三個都是錯的</b>，正解一律看 <code>stop_reason</code>。</div></div>
+
+<div class="card"><h3>多 agent：hub-and-spoke</h3>
+<ul><li>coordinator 管所有 subagent 間通訊、錯誤處理、資訊路由。</li><li>subagent <b>context 是隔離的，不會自動繼承</b> coordinator 的對話史 → 要的 context 必須在 prompt 裡明確傳。</li><li><code>Task</code> 工具 spawn subagent；coordinator 的 <code>allowedTools</code> 必須含 <code>"Task"</code>。</li><li>並行 subagent = 在<b>同一個回應</b>裡發多個 <code>Task</code> call（不是分幾個 turn）。</li><li>coordinator prompt 給「目標 + 品質標準」，不是逐步程序（讓 subagent 有適應力）。</li></ul>
+<div class="trap"><b>⛔ 陷阱</b>：coordinator 把任務切太細 → 廣泛研究題覆蓋不全。</div></div>
+
+<div class="card"><h3>確定性 vs 機率性：hooks &amp; prerequisite gates</h3>
+<ul><li>需要「保證」的合規（如金流前先驗身分）→ 用 <b>hooks / prerequisite gate</b>，不能只靠 prompt（prompt 有非零失敗率）。</li><li>prerequisite gate：擋住 <code>process_refund</code> 直到 <code>get_customer</code> 回傳已驗證 ID。</li><li><code>PostToolUse</code> hook：攔工具結果做正規化（Unix ts / ISO 8601 統一）；攔外送工具呼叫做合規（擋 &gt;$500 退款→轉人工）。</li></ul>
+<div class="good"><b>✅ 心法</b>：business rule 要「保證」→ hook；「盡量」→ prompt。</div></div>
+
+<div class="card"><h3>任務分解 &amp; session</h3>
+<ul><li>可預測的多面向審查 → 固定 pipeline（prompt chaining，逐檔分析 + 一次跨檔整合 pass）。</li><li>開放式調查（「幫 legacy 加完整測試」）→ 動態適應分解（先 map 結構→找高影響區→隨依賴發現調整計畫）。</li><li><code>--resume &lt;session-name&gt;</code> 續特定對話；<code>fork_session</code> 從共同基線開平行分支。</li></ul>
+<div class="trap"><b>⛔ 陷阱</b>：拿舊 tool result 硬 resume。<b>✅ 正解</b>：工具結果過期時，<b>開新 session + 灌結構化摘要</b>比 resume 可靠。</div></div>
+
+<h2 class="ch">Domain 2 · Tool Design &amp; MCP Integration <span class="wt">18%</span></h2>
+<div class="card"><h3>工具描述 = 選工具的主要依據</h3>
+<ul><li>描述太少/重疊 → 誤路由（<code>analyze_content</code> vs <code>analyze_document</code> 描述雷同）。</li><li>system prompt 的關鍵字會蓋過工具描述。</li></ul>
+<div class="good"><b>✅ 修法</b>：改名消重疊（<code>analyze_content</code>→<code>extract_web_results</code>）；把通用工具拆成專用（<code>analyze_document</code>→<code>extract_data_points</code>/<code>summarize_content</code>/<code>verify_claim_against_source</code>）。</div></div>
+
+<div class="card"><h3>MCP 結構化錯誤</h3>
+<ul><li><code>isError</code> flag。錯誤分四類：transient(逾時) / validation(輸入錯) / business(違規) / permission。</li><li>回傳 <code>errorCategory</code> + <code>isRetryable</code> boolean + 人類可讀說明。</li><li>要分「access 失敗（需重試）」vs「valid empty result（查詢成功但無資料）」。</li></ul>
+<div class="trap"><b>⛔ 陷阱</b>：統一回「Operation failed」→ agent 無法做正確 recovery 決策。</div></div>
+
+<div class="card"><h3>工具數量 &amp; tool_choice &amp; MCP scoping</h3>
+<ul><li>工具太多（18 vs 4-5）→ 選擇可靠度下降。每個 subagent 只給角色需要的工具。</li><li><code>tool_choice</code>：<code>"auto"</code>(可回文字) / <code>"any"</code>(必呼叫某工具) / 強制 <code>{"type":"tool","name":"..."}</code>。</li><li>MCP scoping：專案級 <code>.mcp.json</code>（團隊共用）vs 使用者級 <code>~/.claude.json</code>（個人）。用 <code>${GITHUB_TOKEN}</code> 展開避免 commit 密鑰。</li><li>MCP resources 暴露內容目錄（issue 摘要/schema）減少探索性呼叫；標準整合優先用社群 MCP（Jira）。</li></ul></div>
+
+<div class="card"><h3>內建工具</h3>
+<ul><li><code>Grep</code>=搜內容；<code>Glob</code>=檔名/副檔名 pattern（<code>**/*.test.tsx</code>）；<code>Read/Write</code>=整檔；<code>Edit</code>=唯一文字定位的精準改。</li><li><code>Edit</code> 因文字不唯一失敗 → <b>Read + Write</b> fallback。</li><li>漸進理解 codebase：先 Grep 找進入點 → Read 跟著 import 追流程，<b>不要一次讀全部</b>。</li></ul></div>
+
+<h2 class="ch">Domain 3 · Claude Code Configuration &amp; Workflows <span class="wt">20%</span></h2>
+<div class="card"><h3>CLAUDE.md 階層</h3>
+<ul><li>使用者級 <code>~/.claude/CLAUDE.md</code>（<b>不隨版控分享</b>）→ 專案級 <code>.claude/CLAUDE.md</code> 或根目錄 → 目錄級（子資料夾）。</li><li><code>@import</code> 引外部檔保持模組化；<code>.claude/rules/</code> 放主題規則檔取代單一巨型 CLAUDE.md。</li><li><code>.claude/rules/</code> 檔的 YAML frontmatter <code>paths</code>（glob）→ 只在編輯符合檔案時載入，省 context/token。</li></ul>
+<div class="trap"><b>⛔ 診斷題</b>：新成員收不到指令 = 指令放在「使用者級」而非「專案級」。用 <code>/memory</code> 查哪些 memory 被載入。</div></div>
+
+<div class="card"><h3>Commands / Skills</h3>
+<ul><li>專案級 <code>.claude/commands/</code>（版控共享）vs 使用者級 <code>~/.claude/commands/</code>。</li><li>Skills 在 <code>.claude/skills/</code>，SKILL.md frontmatter：<code>context: fork</code>（隔離 sub-agent 跑、輸出不污染主對話）、<code>allowed-tools</code>（限工具防破壞）、<code>argument-hint</code>。</li><li>Skill（按需、任務型）vs CLAUDE.md（always-load、通用標準）。</li></ul></div>
+
+<div class="card"><h3>Plan mode vs 直接執行 &amp; CI/CD</h3>
+<ul><li>Plan mode：大規模改動、多方案、架構決策、多檔（如 library migration 影響 45+ 檔）。</li><li>直接執行：簡單、範圍清楚（單檔 bugfix、加一個驗證）。可組合：plan 調查 + 直接執行實作。</li><li>CI/CD：<code>-p</code>(<code>--print</code>) 非互動模式防卡；<code>--output-format json</code> + <code>--json-schema</code> 出機器可解析結果貼 PR。</li></ul>
+<div class="trap"><b>⛔ 陷阱</b>：同一個「產碼的 session」去 review 自己的改動 → 較差。<b>✅</b> 用獨立 review instance；重跑 review 時把前次 finding 灌進 context，只報新的/未解的，避免重複留言。</div></div>
+
+<h2 class="ch">Domain 4 · Prompt Engineering &amp; Structured Output <span class="wt">20%</span></h2>
+<div class="card"><h3>明確 criteria &gt; 模糊指令</h3>
+<ul><li>「只在註解與實際行為矛盾時 flag」&gt;「檢查註解是否正確」。</li><li>「be conservative」「只報高信心」<b>無法</b>提升精準度 → 要用具體分類 criteria。</li><li>高 false-positive 分類會侵蝕開發者信任 → 暫時關掉爛分類、定義帶程式碼範例的嚴重度分級。</li></ul></div>
+
+<div class="card"><h3>Few-shot</h3>
+<ul><li>詳細指令仍不一致時，few-shot 是<b>最有效</b>手段。給 2-4 個針對模糊情境、展示「為何選 A 而非合理替代」的範例。</li><li>few-shot 讓模型「泛化判斷」而非只 match 預設案例；也降擷取任務的幻覺。</li></ul></div>
+
+<div class="card"><h3>結構化輸出 = tool use + JSON schema</h3>
+<ul><li><code>tool_use</code> + JSON schema = 保證 schema 合規的最可靠法，<b>消 JSON 語法錯</b>。</li><li>但 schema <b>只防語法錯，不防語意錯</b>（如 line item 加總不等於 total、值放錯欄）。</li><li>schema 設計：來源可能沒有的欄位設 <b>optional/nullable</b>，防模型為填必填欄而捏造。enum 加 "other"+detail 字串保擴充。</li><li><code>tool_choice: "any"</code> 保證出結構化；強制 <code>{"type":"tool","name":"extract_metadata"}</code> 確保特定擷取先跑。</li></ul></div>
+
+<h2 class="ch">Domain 5 · Context Management &amp; Reliability <span class="wt">15%</span></h2>
+<div class="card"><h3>核心觀念</h3>
+<ul><li>長 context 最佳化、防 context drift/bloat（工具輸出 pruning、compaction）。</li><li>用 subagent / 多步 workflow 做 context 隔離（如 Explore subagent 隔離冗長探索輸出、只回摘要，保住主對話 context）。</li><li>錯誤傳播：subagent 內部先做 local recovery（transient 錯），只把「無法在本地解決的錯 + 部分結果 + 試過什麼」上報 coordinator。</li><li>token 經濟：prompt caching / cache check-pointing。</li></ul>
+<div class="good"><b>✅ 心法</b>：多階段任務怕 context 爆 → 把冗長工作丟 subagent 做、只收摘要回來。</div></div>
+
+<h2 class="ch">🚀 你的路徑</h2>
+<div class="card">
+<ol style="padding-left:20px;margin:4px 0;font-size:.93rem">
+<li>掃 <a href="courses.html">官方 6 門必修</a> 對齊用語（你多數已會，快轉即可）。</li>
+<li>把上面每個 <span style="color:var(--bad);font-weight:700">⛔ 陷阱</span> 背熟——這張證的分數多在「認出錯誤選項」。</li>
+<li>去 <a href="quiz.html">自我測驗</a> 練手感（題庫技術題與 CCAR-F 高度重疊；<b>合規題可略過</b>，CCAR-F 沒這域）。</li>
+<li>排考 CCAR-F → 過了再考慮要不要上 CCAR-P（只需多補合規+利害關係人）。</li>
+</ol></div>
+
+<div class="foot">CCAR-F 攻略速記卡 · 依官方 exam guide（考綱藍圖）整理之個人備考筆記 · 非官方教材、非考題外洩</div>
+</div></body></html>

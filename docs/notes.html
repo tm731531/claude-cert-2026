@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCAR-F 課程筆記</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.28rem}.top p{margin:0;opacity:.94;font-size:.87rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.85em;font-family:"SF Mono",Menlo,Consolas,monospace}
+pre{background:rgba(128,128,128,.12);border:1px solid var(--line);border-radius:9px;padding:12px 14px;overflow-x:auto;font-size:.82rem;line-height:1.5}
+pre code{background:none;padding:0}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 16px;margin:12px 0;font-size:.92rem}
+.toc a{display:inline-block;margin:2px 8px 2px 0}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:28px 0 6px;font-size:1.18rem}
+.meta{font-size:.84rem;color:var(--muted);margin:0 0 6px}
+.meta a{margin-right:10px}
+h3{margin:16px 0 4px;font-size:1.03rem;color:var(--accent2)}
+@media(prefers-color-scheme:dark){h3{color:var(--accent)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 16px;margin:11px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+ul{margin:5px 0;padding-left:20px}li{margin:4px 0;font-size:.93rem}
+table{width:100%;border-collapse:collapse;font-size:.87rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff}
+.key{background:var(--ybg);border-left:4px solid var(--y);border-radius:8px;padding:9px 13px;margin:8px 0;font-size:.9rem}
+.exam{background:var(--blbg);border-left:4px solid var(--bl);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:.9rem}
+.exam b{color:var(--bl)}@media(prefers-color-scheme:dark){.exam b{color:#8ab8e0}}
+.foot{color:var(--muted);font-size:.8rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>📝 CCAR-F 課程筆記</h1><p>Anthropic Academy 官方課程收整。每門課扣回 CCAR-F 考點。持續增補中。</p></div>
+
+<div class="toc"><b>目錄</b><br>
+<a href="#subagents">① Introduction to Subagents</a>
+<span style="color:var(--muted)">（更多課程陸續加入…）</span></div>
+
+<h2 class="ch" id="subagents">① Introduction to Subagents</h2>
+<p class="meta">Academy 課程 · 對應 <a href="ccar-f.html">CCAR-F</a> Domain 1（Agentic Architecture 27%）+ Domain 3（Claude Code Config）
+<br>🎬 <a href="https://www.youtube.com/watch?v=jKErNxuxPXg" target="_blank">影片 1：概念</a> · <a href="https://www.youtube.com/watch?v=arD6qEWa2Xc" target="_blank">影片 2：建立自訂 subagent</a> · <a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">課程頁</a></p>
+
+<h3>1. 什麼是 subagent</h3>
+<div class="card"><ul>
+<li>Claude Code 可委派任務的<b>專用助手</b>：各自跑在<b>獨立 context window</b>，做完只把<b>摘要</b>回主線。</li>
+<li>中間所有動作（file read、search、tool call）都留在自己的 context，<b>不會塞爆主對話</b>。</li>
+</ul></div>
+
+<h3>2. 為什麼重要（核心 = context 隔離）</h3>
+<div class="card"><ul>
+<li>每次對話都在累積主 context window，工具呼叫/讀檔/搜尋結果都存那；容量有限，填滿後 Claude 開始<b>失去對前面內容的追蹤</b>。</li>
+<li>subagent 開一個獨立 context 解決此問題。它收兩樣東西：<b>①</b> config 檔的 custom system prompt（定義角色/行為）<b>②</b> parent 依你需求寫的 task description。</li>
+<li>然後獨立工作，完成後<b>只回摘要</b>，整段 subagent 對話<b>被丟棄</b>。</li>
+<li><b>Tradeoff</b>：主 context 乾淨，但你<b>失去「它如何得到結論」的可見性</b>。</li>
+</ul></div>
+
+<h3>3. 實例</h3>
+<div class="card">問「哪個 service 處理退款」：<br>
+· 無 subagent → Claude 可能讀 15 個檔、跑多次搜尋、追多個函式，全塞進你的 context（你其實只要一個事實）。<br>
+· 有 subagent → Explore subagent 在自己 context 挖，回一個聚焦答案。你的主 context <b>只記「問題 + 摘要」</b>，不記那 15 個檔。</div>
+
+<h3>4. 內建 subagents</h3>
+<div class="card"><table>
+<tr><th>Subagent</th><th>用途</th></tr>
+<tr><td>General purpose</td><td>需要「探索 + 行動」的多步驟任務</td></tr>
+<tr><td>Explore</td><td>快速搜尋/導航 codebase</td></tr>
+<tr><td>Plan</td><td>plan mode 時，先研究分析 codebase 再提計畫</td></tr>
+</table></div>
+
+<h3>5. 自訂 subagent</h3>
+<div class="card">
+<b>本質</b>：markdown 檔 + YAML frontmatter，告訴 Claude「何時用」與「如何 behave」。<br><br>
+<b>建立流程</b>（<code>/agents</code> slash command → Create new agent）：
+<ul>
+<li><b>Scope</b>：Project-level（僅當前專案）／ User-level（全機所有專案共用）。</li>
+<li><b>建法</b>：可手寫，但<b>推薦讓 Claude 生成</b>——描述你要它做什麼，Claude 產出 name / description / system prompt。</li>
+<li><b>客製工具</b>（想清楚它「真正需要」什麼）：類別 = Read-only / Edit / Execution / MCP / Other。<br>例：code reviewer <b>不需 Edit</b>（只讀+分析、不改），但可留 Execution 以辨識 pending changes。</li>
+<li><b>選 model</b>：Haiku（快、輕）／ Sonnet（速度深度中庸）／ Opus（複雜分析）／ Inherit（跟主對話同一個）。</li>
+<li><b>選 color</b>：UI 辨識用，多個 subagent 同時跑時好認。</li>
+</ul>
+</div>
+
+<h3>6. Config 檔</h3>
+<div class="card">存於 <code>.claude/agents/your-agent-name.md</code>。典型長相：
+<pre><code>---
+name: code-quality-reviewer
+description: Use this agent when you need to review recently written
+  or modified code for quality, security, and best practice compliance.
+tools: Bash, Glob, Grep, Read, WebFetch, WebSearch
+model: sonnet
+color: purple
+---
+
+You are an expert code reviewer specializing in quality assurance,
+security best practices, and adherence to project standards. ...</code></pre>
+<table>
+<tr><th>欄位</th><th>意義</th></tr>
+<tr><td><code>name</code></td><td>唯一識別；用 <code>@agent code-quality-reviewer</code> 引用。</td></tr>
+<tr><td><code>description</code></td><td><b>控制 Claude 何時用它</b>。必須<b>單行</b>（要換行用 <code>\n</code>）。可放範例對話幫判斷。</td></tr>
+<tr><td><code>tools</code></td><td>可用工具清單（＝建立時選的，可隨時改）。</td></tr>
+<tr><td><code>model</code></td><td><code>sonnet</code> / <code>opus</code> / <code>haiku</code> / <code>inherit</code>。</td></tr>
+<tr><td><code>color</code></td><td>UI 顏色。</td></tr>
+</table>
+<b>Body</b>（frontmatter 以下）＝ system prompt：給指令——focus 什麼、如何分析、如何回報 finding 給主 agent。好的 system prompt 是「有用 vs 沒抓到重點」的差別。</div>
+
+<h3>7. 讓 Claude 自動委派 + 測試</h3>
+<div class="card"><ul>
+<li>想讓 Claude 不用你明講就委派 → description 裡放 <b>"proactively"</b>（例：<code>Proactively suggest running this agent after major code changes…</code>）。</li>
+<li>在 description 加<b>具體範例對話</b>，越具體 Claude 越知道何時委派。</li>
+<li><b>測試</b>：改點 code，叫 Claude review。沒被用 → 回去把 description 的觸發情境/範例寫更具體。</li>
+</ul></div>
+
+<div class="exam"><b>🎯 扣 CCAR-F 考點</b>：
+<ul>
+<li><b>Domain 1（1.2/1.3）</b>：subagent context <b>隔離、不繼承</b> parent；<code>Task</code> 工具 spawn、<code>allowedTools</code> 要含 <code>"Task"</code>；context 要在 prompt 明確傳。← 本課「只回摘要、對話丟棄」正是這個。</li>
+<li><b>Domain 3</b>：<code>.claude/agents/</code> 檔、scope（project vs user）、tools 限制、frontmatter 欄位。</li>
+<li><b>Domain 5</b>：用 subagent 做 <b>context 隔離</b>（Explore 隔離冗長探索、只回摘要保主 context）← 本課實例正是。</li>
+<li>選 model：Haiku/Sonnet/Opus/Inherit 對應「找→做→想」的成本考量（呼應你 CLAUDE.md 的 Agent Team 選模規則）。</li>
+</ul></div>
+
+<div class="foot">CCAR-F 課程筆記 · Academy 課程之個人整理 · 非官方教材</div>
+</div></body></html>
