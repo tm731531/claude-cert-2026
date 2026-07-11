@@ -38,15 +38,46 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 
 <h2 class="ch">📊 各域錯題統計（弱點雷達）</h2>
 <div class="tally">
-<div class="d"><b>0</b>D1 Agentic Architecture</div>
+<div class="d hot"><b>4</b>D1 Agentic Arch ← 陷阱域</div>
 <div class="d hot"><b>4</b>D2 Tool/MCP ← 弱點</div>
 <div class="d"><b>0</b>D3 Claude Code</div>
 <div class="d hot"><b>4</b>D4 Eval + Prompt ← 主要弱點</div>
 <div class="d"><b>0</b>D5 Context/Reliability</div>
 </div>
-<div class="note">🎯 <b>兩個實證弱點：D4（Evaluation）+ D2（Tool/MCP）各 4 題。</b> 補法：D4→<a href="notes-building-api.html#c">模組 C eval 卡</a>；D2→<a href="notes-building-api.html#g">模組 G MCP 卡</a> + <a href="notes-building-api.html#d">模組 D 工具卡</a>。這兩域佔 CCAR-F 共 <b>37%</b>，是你 CP 值最高的補強點。</div>
+<div class="note">🎯 <b>三個實證弱點：D1(4) + D2(4) + D4(4)。</b> 尤其 <b>D1 是「隱藏陷阱」</b>——實戰強但考試錯,因為考 pattern 名稱 + 「優先 workflow」立場。這三域佔 CCAR-F <b>共 64%</b>,補這三塊 = 幾乎全部戰場。補法:D1→<a href="notes-building-api.html#h">模組 H</a>、D2→<a href="notes-building-api.html#g">模組 G/D</a>、D4→<a href="notes-building-api.html#c">模組 C</a>。</div>
 
 <h2 class="ch">📝 錯題清單</h2>
+
+<div class="note" style="background:var(--badbg);border-color:var(--bad)">🚨 <b>D1 是你的隱藏陷阱域（不是強項！）</b>：你 agent 實戰很強，但 quiz 的 D1 你錯 4 題——因為考的是 ① <b>Anthropic 的 pattern 名稱</b>(evaluator-optimizer / routing / chaining / parallelization 要對號入座) ② <b>「優先選 workflow 求可靠」的教科書立場</b>。你的 production 直覺會選「agent/彈性」，但考試要選「workflow/可靠」。<b>這正是「實戰直覺 vs 教科書答案」的落差——考試切換成教科書腦。</b></div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D1</span><span class="src">Agents & Workflows · 隨堂</span></div>
+<div class="qt">寫報告 → 檢查夠不夠好 → 不夠就改進。這是什麼 pattern？</div>
+<div class="ans">✅ 正解：<b>Evaluator-Optimizer</b></div>
+<div class="why">producer 產出 → evaluator 評 → loop 到通過。別跟 chaining(純序列)搞混——關鍵是「<b>評估+回饋迴圈</b>」。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D1</span><span class="src">Agents & Workflows · 隨堂</span></div>
+<div class="qt">不同內容類型(程式=教學、運動=娛樂)要不同處理，用什麼 pattern？</div>
+<div class="ans">✅ 正解：<b>Routing</b>（先分類 → 路由到專門 pipeline）</div>
+<div class="why">先分類再導向專屬 prompt/工具 = routing。別跟 parallelization(同時拆子任務)混。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D1</span><span class="src">Agents & Workflows · 隨堂</span></div>
+<div class="qt">可靠、可預測最重要，選 workflow 還是 agent？</div>
+<div class="ans">✅ 正解：<b>Workflow（更可靠、更好測）</b></div>
+<div class="why">🔴 <b>你的陷阱題</b>：實戰你愛 agent 彈性,但考試要「可靠→workflow」。記住教科書鐵則:<b>先可靠解決,創新其次</b>。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D1</span><span class="src">Agents & Workflows · 隨堂</span></div>
+<div class="qt">每次步驟都完全一樣、你很清楚要哪些步(修車估價)，用什麼？</div>
+<div class="ans">✅ 正解：<b>Workflow with predetermined steps</b></div>
+<div class="why">🔴 <b>同陷阱</b>：步驟已知 → workflow；步驟未知才 agent。別因為「agent 比較炫」就選 agent。</div>
+</div>
+
 
 <div class="q">
 <div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Eval 隨堂</span></div>
