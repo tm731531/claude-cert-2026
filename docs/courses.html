@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anthropic Academy 全課程</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16.5px}
+.wrap{max-width:840px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.28rem}.top p{margin:0;opacity:.94;font-size:.88rem}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:26px 0 8px;font-size:1.12rem}
+.note{background:var(--ybg);border-left:4px solid var(--y);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.88rem}
+.c{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.c.must{border-left:5px solid var(--accent)}
+.c.rec{border-left:5px solid var(--y)}
+.c.opt{border-left:5px solid var(--line)}
+.c h3{margin:0 0 4px;font-size:1.02rem}
+.c .d{font-size:.87rem;color:var(--muted);margin:2px 0 7px}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{display:inline-block;border-radius:13px;padding:1px 9px;font-size:.72rem;font-weight:700}
+.pri-must{background:var(--accent);color:#fff}.pri-rec{background:var(--ybg);color:var(--y)}.pri-opt{background:#efeae5;color:#7a706a}
+@media(prefers-color-scheme:dark){.pri-opt{background:#2f2925;color:#a89a92}}
+.dom{background:var(--blbg);color:var(--bl)}
+@media(prefers-color-scheme:dark){.dom{color:#8ab8e0}}
+.cert{background:var(--okbg);color:var(--ok)}
+.num{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;background:var(--accent);color:#fff;border-radius:50%;font-size:.8rem;font-weight:700;margin-right:6px}
+.foot{color:var(--muted);font-size:.82rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+ol.path{padding-left:6px;list-style:none}
+ol.path li{margin:6px 0;font-size:.94rem}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>🎓 Anthropic Academy 全課程</h1><p>官方免費課程（anthropic.com/learn，host 在 skilljar）。全部免費、不用信用卡，修完發官方證書。共 20 門，三軌。標籤標出對應哪張證與 CCAR-P 考域。</p></div>
+<div class="note">⚠️ 個別課程連結是動態載入，無法逐課給固定網址。統一從官方 catalog 進入點 <b>Enroll</b>：<a href="https://anthropic.skilljar.com/" target="_blank">anthropic.skilljar.com</a> · <a href="https://www.anthropic.com/learn" target="_blank">anthropic.com/learn</a>。課程數官方會增加，以 catalog 為準。</div>
+
+<h2 class="ch">🎯 CCAR-P 建議修課順序（集中火力）</h2>
+<div class="c">
+<ol class="path">
+<li><span class="num">1</span><b>AI Fluency: Framework &amp; Foundations</b> — 補 D5 responsible-use 詞彙（你的紅色缺口的官方那半）</li>
+<li><span class="num">2</span><b>Claude Platform 101</b> → <b>Building with the Claude API</b> — D2/D3 底</li>
+<li><span class="num">3</span><b>Introduction to Model Context Protocol</b> → <b>MCP: Advanced Topics</b> — D3 最重（19%）</li>
+<li><span class="num">4</span><b>Introduction to Agent Skills</b> — D2（Skills/prompt 重用，考綱明列）</li>
+<li><span class="num">5</span><b>Introduction to Subagents</b> — D1 多 agent 編排</li>
+<li><span class="num">6</span><b>Claude Code 101</b> → <b>Claude Code in Action</b> — D7（對齊官方用語即可）</li>
+</ol>
+<span style="color:var(--muted);font-size:.85rem">法規本身（GDPR/HIPAA/FedRAMP）Academy 不教 → 見 <a href="reference.html">考綱速覽</a>，需自學概念卡。</span>
+</div>
+
+<h2 class="ch">🛠️ Developer Deep-Dives（開發者深入）</h2>
+
+<div class="c must"><h3>Claude Platform 101</h3><div class="d">從 API 呼叫到聊天視窗，教開發者在 Claude Developer Platform 上建構。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D2</span><span class="tag dom">D3</span><span class="tag cert">CCDV-F</span></div></div>
+
+<div class="c must"><h3>Building with the Claude API</h3><div class="d">完整涵蓋透過 Claude API 使用 Anthropic 模型。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D2</span><span class="tag dom">D3</span><span class="tag cert">CCDV-F</span></div></div>
+
+<div class="c must"><h3>Introduction to Model Context Protocol</h3><div class="d">用 Python 與核心 primitive 建 MCP server / client。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D3（19% 最重）</span><span class="tag cert">CCDV-F</span></div></div>
+
+<div class="c must"><h3>Model Context Protocol: Advanced Topics</h3><div class="d">production 級 MCP 進階模式。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D3</span></div></div>
+
+<div class="c must"><h3>Introduction to Agent Skills</h3><div class="d">建立與分享可重用的 markdown 指令（Skills）給 Claude。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D2（prompt 重用）</span></div></div>
+
+<div class="c must"><h3>Introduction to Subagents</h3><div class="d">在 Claude Code 中管理 context、委派任務給 sub-agent。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D1（多 agent 編排）</span></div></div>
+
+<div class="c must"><h3>Claude Code 101</h3><div class="d">在日常開發流程中有效使用 Claude Code（Explore→Plan→Code→Commit）。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D7</span><span class="tag cert">CCDV-F</span></div></div>
+
+<div class="c must"><h3>Claude Code in Action</h3><div class="d">把 Claude Code 整合進開發工作流的實作。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D7</span></div></div>
+
+<div class="c rec"><h3>Claude with Amazon Bedrock</h3><div class="d">在 AWS Bedrock 上使用 Claude。</div>
+<div class="tags"><span class="tag pri-rec">建議</span><span class="tag dom">D3（企業部署）</span></div></div>
+
+<div class="c rec"><h3>Claude with Google Cloud's Vertex AI</h3><div class="d">透過 Vertex AI 使用 Anthropic 模型的完整光譜。</div>
+<div class="tags"><span class="tag pri-rec">建議</span><span class="tag dom">D3（企業部署）</span></div></div>
+
+<h2 class="ch">🧭 AI Fluency（框架與負責任使用）</h2>
+
+<div class="c must"><h3>AI Fluency: Framework &amp; Foundations</h3><div class="d">有效、有效率、合乎倫理且安全地與 AI 協作。Associate 級必修，各軌都有用。</div>
+<div class="tags"><span class="tag pri-must">CCAR-P 必修</span><span class="tag dom">D5（responsible use）</span><span class="tag cert">CCAO-F 核心</span></div></div>
+
+<div class="c opt"><h3>AI Capabilities and Limitations</h3><div class="d">入門：AI 如何運作。</div>
+<div class="tags"><span class="tag pri-opt">選修</span><span class="tag cert">CCAO-F</span></div></div>
+
+<div class="c opt"><h3>AI Fluency for Builders</h3><div class="d">從問題定義到產品出貨，賦能 builder。</div>
+<div class="tags"><span class="tag pri-opt">選修</span><span class="tag dom">D1</span></div></div>
+
+<div class="c opt"><h3>Teaching AI Fluency</h3><div class="d">讓講師能在正式場域教與評 AI Fluency。</div>
+<div class="tags"><span class="tag pri-opt">選修</span></div></div>
+
+<div class="c opt"><h3>AI Fluency for Educators</h3><div class="d">教職員把 AI Fluency 用於教學與校務策略。</div>
+<div class="tags"><span class="tag pri-opt">選修</span></div></div>
+
+<div class="c opt"><h3>AI Fluency for Students</h3><div class="d">學生的學習、生涯規劃與學業技能。</div>
+<div class="tags"><span class="tag pri-opt">選修</span></div></div>
+
+<div class="c opt"><h3>AI Fluency for Nonprofits</h3><div class="d">非營利在維持使命一致下擴大影響。</div>
+<div class="tags"><span class="tag pri-opt">選修</span></div></div>
+
+<div class="c opt"><h3>AI Fluency for Small Businesses</h3><div class="d">提升組織影響力與效率的 fluency。</div>
+<div class="tags"><span class="tag pri-opt">選修</span></div></div>
+
+<h2 class="ch">💼 Product / Work（一般 Claude 使用）</h2>
+
+<div class="c rec"><h3>Claude 101</h3><div class="d">用 Claude 處理日常工作、了解核心功能。</div>
+<div class="tags"><span class="tag pri-rec">建議</span><span class="tag cert">CCAO-F</span></div></div>
+
+<div class="c rec"><h3>Introduction to Claude Cowork</h3><div class="d">Cowork task loop、plugins、skills、檔案工作流。</div>
+<div class="tags"><span class="tag pri-rec">建議</span><span class="tag dom">D7</span></div></div>
+
+<div class="foot">Anthropic Academy 全課程整理（共 20 門）· 資料來源：anthropic.skilljar.com catalog · 非官方教材，課程內容以官方為準</div>
+</div></body></html>
