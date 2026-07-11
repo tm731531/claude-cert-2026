@@ -43,7 +43,7 @@ th{background:var(--accent);color:#fff}
 
 <h2 class="ch" id="subagents">① Introduction to Subagents</h2>
 <p class="meta">Academy 課程 · 對應 <a href="ccar-f.html">CCAR-F</a> Domain 1（Agentic Architecture 27%）+ Domain 3（Claude Code Config）
-<br>🎬 <a href="https://www.youtube.com/watch?v=jKErNxuxPXg" target="_blank">影片 1：概念</a> · <a href="https://www.youtube.com/watch?v=arD6qEWa2Xc" target="_blank">影片 2：建立自訂 subagent</a> · <a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">課程頁</a></p>
+<br>🎬 <a href="https://www.youtube.com/watch?v=jKErNxuxPXg" target="_blank">影片 1：概念</a> · <a href="https://www.youtube.com/watch?v=arD6qEWa2Xc" target="_blank">影片 2：建立</a> · <a href="https://www.youtube.com/watch?v=WPxWKT_OaU4" target="_blank">影片 3：有效 pattern</a> · <a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">課程頁</a></p>
 
 <h3>1. 什麼是 subagent</h3>
 <div class="card"><ul>
@@ -114,6 +114,46 @@ security best practices, and adherence to project standards. ...</code></pre>
 <li>在 description 加<b>具體範例對話</b>，越具體 Claude 越知道何時委派。</li>
 <li><b>測試</b>：改點 code，叫 Claude review。沒被用 → 回去把 description 的觸發情境/範例寫更具體。</li>
 </ul></div>
+
+<h3>8. 讓 subagent 真正有效的 4 個關鍵</h3>
+<div class="card">爛配置的 subagent 會<b>亂晃、跑太久、產出主 agent 沒法用的東西</b>。四個修法：<b>好描述 / 定義輸出格式 / 回報障礙 / 限制工具</b>。
+<div class="key">💡 config 資料怎麼被用：你發訊息給主 agent 時，<b>每個可用 subagent 的 name + description 都被塞進主 agent 的 system prompt</b> → 主 agent 據此決定何時 launch 哪個。而且主 agent launch 時要寫 input prompt，<b>會拿 description 當寫 prompt 的指引</b>。所以 description 不只控「何時跑」，還塑造「subagent 被告知做什麼」。</div>
+</div>
+
+<div class="card"><b>① 用 description 塑造 input prompt</b>
+<ul>
+<li>code review subagent 泛泛描述 → 主 agent 寫出模糊的「use get diff to find current changes」（subagent 得自己猜哪些檔重要）。</li>
+<li>描述改成「<code>You must tell the agent precisely which files you want it to review</code>」→ 主 agent 就會寫出<b>列出實際檔案</b>的具體 input prompt。</li>
+<li>通用：web search subagent 描述加「<code>return sources that can be cited</code>」→ 委派時自動帶這指令。</li>
+</ul></div>
+
+<div class="card"><b>② 定義輸出格式（單一最重要的改進）</b>
+<ul>
+<li>(a) 製造<b>自然停止點</b>——每個 section 填完就知道做完了。</li>
+<li>(b) <b>防跑太久</b>——沒定義輸出的 subagent 難決定何時「研究夠了」，傾向遠超必要。</li>
+</ul>
+code review 範例輸出格式：
+<pre><code>1. Summary        4. Minor Issues
+2. Critical Issues 5. Recommendations
+3. Major Issues    6. Approval Status</code></pre>
+填完六段 → subagent 知道可以停。</div>
+
+<div class="card"><b>③ 回報障礙（Obstacles Encountered）</b>
+<ul>
+<li>subagent 過程發現的 workaround（解了依賴、某指令要特定 flag）<b>必須出現在回傳摘要</b>，否則主線得重新發現一次，浪費時間 + token。</li>
+<li>要 surface：setup 問題/環境怪癖、發現的 workaround、需特殊 flag 的指令、造成問題的依賴/import。</li>
+<li>方法：在 output format <b>明確加一個 <code>Obstacles Encountered</code> section</b> 才會可靠地被回報。</li>
+</ul></div>
+
+<div class="card"><b>④ 限制工具</b>：只給角色真正需要的工具 → 兩個好處：<b>防非預期副作用</b> + 多個 subagent 時<b>角色更清楚</b>。
+<table>
+<tr><th>subagent 類型</th><th>給的工具</th><th>為什麼</th></tr>
+<tr><td>Research / 唯讀</td><td>Glob, Grep, Read</td><td>不可能誤改檔案</td></tr>
+<tr><td>Code reviewer</td><td>+ Bash（跑 <code>git diff</code>）<br>但<b>不給</b> Edit/Write</td><td>要看改了什麼，但不該改</td></tr>
+<tr><td>Styling / 改碼</td><td>+ Edit, Write</td><td>它的工作就是真的改你的碼</td></tr>
+</table></div>
+
+<div class="key">🧩 <b>小結：有效 subagent 的 4 特徵</b>—— ① 具體 description（控何時 launch + 收什麼指令）② 結構化輸出（知道何時做完、回可用資訊）③ 障礙回報（主線不用重新發現）④ 限工具（唯讀給 research、bash 給 reviewer、edit/write 只給該改碼的）。四個各自簡單，合起來把 subagent 從「模糊地想幫忙」變成「準時完成、清楚回報的專注 worker」。</div>
 
 <div class="exam"><b>🎯 扣 CCAR-F 考點</b>：
 <ul>
