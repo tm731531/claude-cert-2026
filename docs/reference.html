@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CCAR-P 考綱速覽</title><style>
+<title>四證考綱速覽</title><style>
 :root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
  --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
  --rev:#a85a00;--revbg:#fff3e0;--y:#c9a227;--ybg:#fdf6e3;}
@@ -8,85 +8,124 @@
  --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--revbg:#33280f;--ybg:#332d14;}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);
- font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
- line-height:1.7;font-size:16.5px}
-.wrap{max-width:820px;margin:0 auto;padding:20px 16px 70px}
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16.5px}
+.wrap{max-width:840px;margin:0 auto;padding:20px 16px 70px}
 a{color:var(--accent)}
 .top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:20px 22px;margin-bottom:16px}
 .top h1{margin:0 0 5px;font-size:1.3rem}.top p{margin:0;opacity:.94;font-size:.9rem}
 .back{display:inline-block;margin-bottom:12px;font-size:.9rem}
 h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:28px 0 8px;font-size:1.15rem}
+h3.sub{margin:18px 0 4px;font-size:1.02rem}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 table{width:100%;border-collapse:collapse;font-size:.88rem;margin:6px 0}
 th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
 th{background:var(--accent);color:#fff;font-weight:700}
-.w{font-weight:800;color:var(--accent)}
+td.w{text-align:right;font-weight:700;white-space:nowrap}
+tr.top-dom td{background:var(--ybg)}
+.who{font-size:.86rem;color:var(--muted);margin:2px 0 6px}
 .dom{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:12px 16px;margin:12px 0}
-.dom h3{margin:0 0 6px;font-size:1.03rem}
-.dom .wt{float:right;background:var(--accent);color:#fff;border-radius:16px;padding:1px 10px;font-size:.8rem;font-weight:700}
-.dom ul{margin:6px 0 0;padding-left:20px;font-size:.9rem}
-.dom li{margin:3px 0}
+.dom h4{margin:0 0 6px;font-size:1rem}
+.dom h4 .wt{float:right;background:var(--accent);color:#fff;border-radius:16px;padding:1px 10px;font-size:.8rem;font-weight:700}
+.dom ul{margin:6px 0 0;padding-left:20px;font-size:.89rem}.dom li{margin:3px 0}
 .pill{display:inline-block;border-radius:14px;padding:1px 9px;font-size:.76rem;font-weight:700;margin-left:5px}
 .g{background:var(--okbg);color:var(--ok)}.ye{background:var(--ybg);color:var(--y)}.r{background:var(--badbg);color:var(--bad)}
 .note{background:var(--revbg);border-left:4px solid var(--rev);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.89rem}
 .foot{color:var(--muted);font-size:.82rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
-<div class="top"><h1>📖 CCAR-P 考綱速覽</h1><p>Claude Certified Architect – Professional · 官方考綱 v1.0（2026-07）· 63 題 / 120 分鐘 / 720 分過（滿分 1000）</p></div>
+<div class="top"><h1>📖 四證考綱速覽</h1><p>Anthropic Claude 認證四張證的官方考域配分（全來自官方 exam guide PDF v1.0, 2026-07）。CCAR-P 為 Tom 目標，附細目 + 落差分析。</p></div>
 
 <h2 class="ch">四張證對照</h2>
 <div class="card"><table>
-<tr><th>代碼</th><th>名稱</th><th>對象</th><th>費用</th><th>題數/時間</th></tr>
-<tr><td>CCAO-F</td><td>Associate – Foundations</td><td>商業/行銷/PM/教育</td><td>$99</td><td>60 / 120′</td></tr>
-<tr><td>CCDV-F</td><td>Developer – Foundations</td><td>軟體工程師</td><td>$125</td><td>53 / 120′</td></tr>
-<tr><td>CCAR-F</td><td>Architect – Foundations</td><td>技術專家/顧問</td><td>$125</td><td>60 / 120′</td></tr>
-<tr><td><b>CCAR-P</b></td><td><b>Architect – Professional</b></td><td>資深/企業級</td><td><b>$175</b></td><td><b>63 / 120′</b></td></tr>
+<tr><th>代碼</th><th>名稱</th><th>對象</th><th>費用</th><th>題數</th></tr>
+<tr><td>CCAO-F</td><td>Associate – Foundations</td><td>商業/行銷/PM/教育</td><td>$99</td><td>60</td></tr>
+<tr><td>CCDV-F</td><td>Developer – Foundations</td><td>軟體工程師</td><td>$125</td><td>53</td></tr>
+<tr><td>CCAR-F</td><td>Architect – Foundations</td><td>技術專家/顧問</td><td>$125</td><td>60</td></tr>
+<tr><td><b>CCAR-P</b></td><td><b>Architect – Professional</b></td><td>資深/企業級</td><td><b>$175</b></td><td><b>63</b></td></tr>
 </table>
-<span style="color:var(--muted);font-size:.85rem">全英文、禁用翻譯 · 效期 12 月 + 免費續證 · 每 12 月最多重考 4 次（14/30/90 天間隔）· Partner tier 5 折或全免（Global Premier 至 2026-08-31 免費）</span></div>
+<span style="color:var(--muted);font-size:.85rem">四張都是 120 分鐘、及格 720/1000、全英文禁翻譯、效期 12 月 + 免費續證、每 12 月最多重考 4 次（14/30/90 天）。黃底 = 該證權重最高域。</span></div>
 
-<h2 class="ch">CCAR-P 七大考域（配分 = job task analysis）</h2>
-<div class="note">右側色塊 = Tom 落差自評：<span class="pill g">強</span> 盤點已知 · <span class="pill ye">中</span> 要補 · <span class="pill r">缺</span> 主攻。</div>
+<h2 class="ch">① CCAO-F · Associate（把 Claude 當生產力工具用）</h2>
+<div class="card"><div class="who">會寫 prompt、評估輸出、選對產品/模型、把 Claude 整進工作流、配 Projects、負責任使用。無需寫程式。</div>
+<table>
+<tr><th>考域</th><th class="w">配分</th></tr>
+<tr class="top-dom"><td>Output Evaluation and Validation（評估輸出、抓幻覺）</td><td class="w">21%</td></tr>
+<tr><td>Workflow Integration and Solution Design</td><td class="w">16%</td></tr>
+<tr><td>Governance, Risk, and Responsible Use</td><td class="w">15%</td></tr>
+<tr><td>Prompting and Task Execution</td><td class="w">14%</td></tr>
+<tr><td>Product and Model Selection</td><td class="w">12%</td></tr>
+<tr><td>Configuration and Knowledge Management（Projects/連接器）</td><td class="w">12%</td></tr>
+<tr><td>Troubleshooting and Optimization</td><td class="w">10%</td></tr>
+</table>
+<span style="color:var(--muted);font-size:.84rem">重心在「<b>評估與驗證輸出</b>」，不是寫扣。適合先拿來熱身/當團隊入門證。</span></div>
 
-<div class="dom"><span class="wt">17%</span><h3>1. Solution Design &amp; Architecture <span class="pill g">強</span></h3>
-<ul><li>把商業問題轉成 Claude 方案</li><li>端到端架構（input→processing→output→feedback loop）</li><li>選架構樣式：workflow / agentic / augmented-LLM</li><li>多 agent 系統與編排策略</li><li>複雜問題分解（decomposition）</li><li>對齊商業價值支柱（效率/轉型/生產力/成本/效能 SLA）</li></ul></div>
+<h2 class="ch">② CCDV-F · Developer（build/integrate/ship 生產級應用）</h2>
+<div class="card"><div class="who">用 Claude Agent SDK 建 agent/workflow、透過 API 與 client SDK 整合、操作 Claude Code、建 MCP server。建議 Python/TypeScript + REST。</div>
+<table>
+<tr><th>考域</th><th class="w">配分</th></tr>
+<tr class="top-dom"><td>Applications and Integration（API 機制/應用設計/軟工基礎）</td><td class="w">33.1%</td></tr>
+<tr><td>Model Selection and Optimization（含 token/caching）</td><td class="w">16.8%</td></tr>
+<tr><td>Agents and Workflows（Agent SDK/多 agent）</td><td class="w">14.7%</td></tr>
+<tr><td>Prompt and Context Engineering</td><td class="w">11.0%</td></tr>
+<tr><td>Tools and MCPs</td><td class="w">10.6%</td></tr>
+<tr><td>Security and Safety</td><td class="w">8.1%</td></tr>
+<tr><td>Claude Code</td><td class="w">3.1%</td></tr>
+<tr><td>Eval, Testing, and Debugging</td><td class="w">2.6%</td></tr>
+</table>
+<span style="color:var(--muted);font-size:.84rem">⚠️ <b>Applications & Integration 一域就佔 1/3</b>——這張證的成敗全看 API 整合與應用設計。</span></div>
 
-<div class="dom"><span class="wt">13%</span><h3>2. Claude Models, Prompting &amp; Context Eng <span class="pill g">強</span></h3>
-<ul><li>依 trade-off 選 Claude 模型</li><li>system prompt / template / guardrail</li><li>prompt 技巧：zero-shot / few-shot / chain-of-thought</li><li>context window 最佳化與 token 管理</li><li>prompt 重用：caching、模組化、<b>Skills</b></li></ul></div>
+<h2 class="ch">③ CCAR-F · Architect Foundations（設計 Claude agent 架構）</h2>
+<div class="card"><div class="who">情境題導向（6 情境抽 4）：客服 agent、Claude Code、多 agent 研究、開發者生產力、CI/CD、結構化資料擷取。</div>
+<table>
+<tr><th>考域</th><th class="w">配分</th></tr>
+<tr class="top-dom"><td>Agentic Architecture &amp; Orchestration（agent loop/coordinator-subagent）</td><td class="w">27%</td></tr>
+<tr><td>Claude Code Configuration &amp; Workflows</td><td class="w">20%</td></tr>
+<tr><td>Prompt Engineering &amp; Structured Output</td><td class="w">20%</td></tr>
+<tr><td>Tool Design &amp; MCP Integration</td><td class="w">18%</td></tr>
+<tr><td>Context Management &amp; Reliability</td><td class="w">15%</td></tr>
+</table>
+<span style="color:var(--muted);font-size:.84rem">= CCAR-P 的「技術核心版」，少了企業合規/利害關係人/lifecycle。<b>對 Tom 幾乎全是盤點已知</b>，可當 CCAR-P 前哨。</span></div>
 
-<div class="dom"><span class="wt">19%</span><h3>3. Integration <span class="pill ye">中</span> <small style="color:var(--muted)">最重</small></h3>
-<ul><li>評估 tool/agent 配置是否 capability bloat</li><li>分析 authn/authz 找安全缺口</li><li>accuracy-latency trade-off 與設定決策</li><li>大規模 observability 監控策略</li><li>設計 RAG pipeline：chunking / indexing / retrieval（配對資料形狀與查詢型態）</li><li>選連線協議：<b>MCP / API·CLI / agent-to-agent</b></li><li>progressive discovery vs monolithic context</li></ul></div>
+<h2 class="ch">④ CCAR-P · Architect Professional（Tom 目標）</h2>
+<div class="note">右側色塊 = Tom 落差自評：<span class="pill g">強</span> 盤點已知 · <span class="pill ye">中</span> 要補 · <span class="pill r">缺</span> 主攻。63 題 / 720 分過。</div>
 
-<div class="dom"><span class="wt">16%</span><h3>4. Evaluation, Testing &amp; Optimization <span class="pill ye">中</span></h3>
-<ul><li>定義 eval metrics（accuracy/latency/cost/safety/security）</li><li>設計 eval dataset 與 mixed methodology 測試框架</li><li>A/B 測試與迭代</li><li>診斷：prompt failure / hallucination / model mismatch</li><li>token/latency/cost 最佳化</li><li>用 logging + observability 監控</li></ul></div>
+<div class="dom"><h4>1. Solution Design &amp; Architecture <span class="wt">17%</span><span class="pill g">強</span></h4>
+<ul><li>商業問題→Claude 方案、端到端架構、workflow/agentic/augmented-LLM 選型、多 agent 編排、decomposition、對齊商業價值支柱</li></ul></div>
 
-<div class="dom"><span class="wt">14%</span><h3>5. Governance, Safety &amp; Risk <span class="pill r">缺</span></h3>
-<ul><li>guardrail 與 safety control</li><li>辨識 LLM 系統風險/限制/failure mode</li><li><b>human-in-the-loop</b> 驗證策略</li><li>合規：<b>GDPR / HIPAA / FedRAMP</b> ← Tom 唯一紅色缺口，需背定義層級</li><li>倫理：bias / fairness / transparency</li></ul></div>
+<div class="dom"><h4>2. Claude Models, Prompting &amp; Context Eng <span class="wt">13%</span><span class="pill g">強</span></h4>
+<ul><li>模型 trade-off 選型、system prompt/guardrail、zero/few-shot/CoT、context window/token、prompt 重用（caching、Skills）</li></ul></div>
 
-<div class="dom"><span class="wt">14%</span><h3>6. Stakeholder Communication &amp; Lifecycle <span class="pill ye">中</span></h3>
-<ul><li>structured discovery 與需求收集</li><li>溝通架構決策與 trade-off</li><li>管理利害關係人回饋與期望（含 SLA）</li><li>架構文件與實作指引</li><li>lifecycle：discovery→design→handoff→monitor→iterate</li></ul></div>
+<div class="dom"><h4>3. Integration <span class="wt">19%</span><span class="pill ye">中</span> <small style="color:var(--muted)">最重</small></h4>
+<ul><li>capability bloat、authn/authz 安全缺口、accuracy-latency、大規模 observability、RAG chunking/indexing/retrieval、連線協議（MCP/API·CLI/agent-to-agent）、progressive vs monolithic context</li></ul></div>
 
-<div class="dom"><span class="wt">7%</span><h3>7. Developer Productivity &amp; Operational Enablement <span class="pill g">強</span></h3>
-<ul><li>為團隊配置 Claude 工具與環境（如 Claude Code）</li><li>用 AI 輔助改善 dev workflow</li><li>支援 debug 與維運問題排解</li></ul></div>
+<div class="dom"><h4>4. Evaluation, Testing &amp; Optimization <span class="wt">16%</span><span class="pill ye">中</span></h4>
+<ul><li>eval metrics、eval dataset/mixed methodology、A/B、診斷（prompt failure/hallucination/model mismatch）、token/latency/cost、observability</li></ul></div>
+
+<div class="dom"><h4>5. Governance, Safety &amp; Risk <span class="wt">14%</span><span class="pill r">缺</span></h4>
+<ul><li>guardrail、風險/failure mode、HITL、合規（<b>GDPR/HIPAA/FedRAMP</b> ← 見 <a href="compliance.html">法規卡</a>）、倫理（bias/fairness/transparency）</li></ul></div>
+
+<div class="dom"><h4>6. Stakeholder Communication &amp; Lifecycle <span class="wt">14%</span><span class="pill ye">中</span></h4>
+<ul><li>structured discovery、trade-off 溝通、SLA/期望、架構文件、lifecycle（discovery→design→handoff→monitor→iterate）</li></ul></div>
+
+<div class="dom"><h4>7. Developer Productivity &amp; Operational Enablement <span class="wt">7%</span><span class="pill g">強</span></h4>
+<ul><li>Claude 工具/環境配置（Claude Code）、AI 輔助 workflow、debug/維運</li></ul></div>
 
 <h2 class="ch">Tom 備考策略（集中火力）</h2>
-<div class="card">
-<b>7 域裡 6 域「強～中」，主攻只有 3 塊：</b>
+<div class="card">7 域裡 6 域「強～中」，主攻 3 塊：
 <ul>
-<li><span class="pill r">缺</span> <b>Domain 5 合規</b>：GDPR / HIPAA / FedRAMP 各「管什麼、觸發條件、對 AI 系統要求」— 背定義即可，考選擇不是律師。</li>
-<li><span class="pill ye">中</span> <b>Domain 4 正式 eval</b>：eval dataset 設計、A/B、mixed methodology、hallucination 歸因。</li>
-<li><span class="pill ye">中</span> <b>Domain 3 authz/observability 設計題</b>：最小權限（移除多餘工具而非加 log）、大規模監控策略。</li>
+<li><span class="pill r">缺</span> <b>Domain 5 合規</b>（GDPR/HIPAA/FedRAMP）→ <a href="compliance.html">法規卡</a>已備</li>
+<li><span class="pill ye">中</span> <b>Domain 4 正式 eval</b>：dataset/A/B/hallucination 歸因</li>
+<li><span class="pill ye">中</span> <b>Domain 3 authz/observability 設計題</b></li>
 </ul>
-其餘（agent 架構 / Claude Code / prompt-context / MCP / token）= 盤點已知，對齊 Anthropic 官方用語即可。
-</div>
+<b>建議路徑</b>：先考 <b>CCAR-F</b>（技術核心、幾乎已會）當前哨 → 再上 <b>CCAR-P</b>（多補合規+利害關係人）。<a href="courses.html">官方全課程</a>的 6 門必修可對齊用語。</div>
 
 <h2 class="ch">報名路徑（官方考綱 §10）</h2>
 <div class="card"><ol style="margin:4px 0;padding-left:20px;font-size:.92rem">
-<li>Anthropic Partner Academy 找對應證的頁面，下載考綱 + 政策</li>
+<li>Anthropic Partner Academy 找對應證頁面，下載考綱 + 政策</li>
 <li>結帳（partner tier 折扣自動套用）</li>
-<li>依指示建 Pearson VUE 帳號 → 排期</li>
-<li>選線上監考或考場</li>
-<li>24 小時前可改期；之內棄考沒收費用</li>
+<li>建 Pearson VUE 帳號 → 排期</li>
+<li>選線上監考或考場（24 小時前可改期）</li>
 </ol></div>
 
-<div class="foot">Anthropic Claude Certification 個人備考整理 · 非 Anthropic 官方教材 · 資料來源：CCAR-P 官方考綱 PDF v1.0（2026-07）+ Pearson VUE</div>
+<div class="foot">四證考綱速覽 · 資料來源：Anthropic 官方 exam guide PDF（CCAO-F/CCDV-F/CCAR-F/CCAR-P）+ Pearson VUE · 非官方教材</div>
 </div></body></html>
