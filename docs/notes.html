@@ -40,6 +40,7 @@ th{background:var(--accent);color:#fff}
 <div class="toc"><b>目錄</b><br>
 <a href="#subagents">① Introduction to Subagents</a>
 <a href="notes-building-api.html">② Building with the Claude API</a>
+<a href="#skills">③ Introduction to Agent Skills</a>
 <span style="color:var(--muted)">（更多課程陸續加入…）</span></div>
 
 <h2 class="ch" id="subagents">① Introduction to Subagents</h2>
@@ -198,6 +199,155 @@ code review 範例輸出格式：
 <li><b>Domain 3</b>：<code>.claude/agents/</code> 檔、scope（project vs user）、tools 限制、frontmatter 欄位。</li>
 <li><b>Domain 5</b>：用 subagent 做 <b>context 隔離</b>（Explore 隔離冗長探索、只回摘要保主 context）← 本課實例正是。</li>
 <li>選 model：Haiku/Sonnet/Opus/Inherit 對應「找→做→想」的成本考量（呼應你 CLAUDE.md 的 Agent Team 選模規則）。</li>
+</ul></div>
+
+<h2 class="ch" id="skills">③ Introduction to Agent Skills</h2>
+<p class="meta">Academy 課程 · 對應 <a href="ccar-f.html">CCAR-F</a> Domain 3（Claude Code config：.claude/skills）+ Domain 2（prompt 重用）
+<br>🎬 <a href="https://www.youtube.com/watch?v=bjdBVZa66oU" target="_blank">影片1 概念</a> · <a href="https://www.youtube.com/watch?v=Wx6_vjFFyHM" target="_blank">影片2 建立</a> · <a href="https://www.youtube.com/watch?v=98KaK_rn5rQ" target="_blank">影片3 進階 config</a> · <a href="https://www.youtube.com/watch?v=IgNN4v0BJdU" target="_blank">影片4 選對工具</a> · <a href="https://www.youtube.com/watch?v=OCBi3eScNLk" target="_blank">影片5 分享</a> · <a href="https://www.youtube.com/watch?v=YBa1cwaG7is" target="_blank">影片6 排解</a> · <a href="https://anthropic.skilljar.com/introduction-to-agent-skills" target="_blank">課程頁</a></p>
+
+<h3>1. 什麼是 Skill</h3>
+<div class="card"><ul>
+<li>一疊指令/資源的<b>資料夾</b>，Claude Code 能<b>自動發現並使用</b>來把任務做得更準。</li>
+<li>核心檔 = <code>SKILL.md</code>，frontmatter 有 <b>name + description</b>；下面寫實際指令(review checklist、格式偏好…)。</li>
+<li><b>寫一次，之後遇到相關任務自動套用</b>——不用每次重講(commit 格式、PR review 方式、團隊 coding 標準)。</li>
+</ul>
+<div class="key">口訣：<b>你發現自己一直對 Claude 重複講同一件事 → 那就是一個該寫的 skill。</b></div></div>
+
+<h3>2. description 驅動匹配</h3>
+<div class="card">Claude 拿你的 request <b>比對所有 skill 的 description</b>，啟用匹配的那些。所以 <code>description</code> 決定「<b>何時用這個 skill</b>」——寫得越具體越準。
+<pre><code>---
+name: pr-review
+description: Reviews pull requests for code quality.
+  Use when reviewing PRs or checking code changes.
+---</code></pre></div>
+
+<h3>3. Skill 存哪</h3>
+<div class="card"><table>
+<tr><th>類型</th><th>位置</th><th>特性</th></tr>
+<tr><td><b>Personal</b></td><td><code>~/.claude/skills</code><br>(Win: <code>C:/Users/&lt;user&gt;/.claude/skills</code>)</td><td>跨你<b>所有專案</b>跟著走(個人 commit 風格、文件格式)</td></tr>
+<tr><td><b>Project</b></td><td><code>.claude/skills</code>（repo 根）</td><td>進<b>版控</b>，clone 的人<b>自動有</b> = 團隊標準/品牌指南</td></tr>
+</table></div>
+
+<h3>4. On-demand 載入（關鍵）</h3>
+<div class="card">初始<b>只載 name + description</b>(不塞爆 context)；<b>匹配到才載全文</b>。→ debug 時你的 PR review checklist 不在 context，等你真的叫 review 才載入。</div>
+
+<h3>5. Skills vs CLAUDE.md vs Slash Commands</h3>
+<div class="card"><table>
+<tr><th>機制</th><th>何時載入</th><th>例</th></tr>
+<tr><td><b>CLAUDE.md</b></td><td><b>每個對話都載</b>(always-on)</td><td>永遠用 TypeScript strict mode</td></tr>
+<tr><td><b>Skills</b></td><td><b>匹配 request 時自動載</b>(on-demand + 任務專屬)</td><td>PR review checklist</td></tr>
+<tr><td><b>Slash commands</b></td><td><b>要你手動打</b></td><td><code>/format</code></td></tr>
+</table>
+<div class="key">一句話：CLAUDE.md=每次、Skills=自動匹配、Slash=手動。<b>Skills 獨特在「自動 + 任務專屬 + 省 context」。</b></div></div>
+
+<h3>6. 何時該寫成 Skill</h3>
+<div class="card">專屬任務知識：code review 標準、commit 格式、品牌指南、文件模板、特定框架的 debug checklist。<b>重複解釋 = 該寫 skill。</b></div>
+
+<h3>7. 建立 / 測試 skill</h3>
+<div class="card"><ul>
+<li>Skill = <b>一個目錄</b>內含 <code>SKILL.md</code>;<b>目錄名 = skill 名</b>(<code>mkdir ~/.claude/skills/pr-description</code>)。</li>
+<li>SKILL.md 兩段:frontmatter(name/description)+ 下方指令。</li>
+<li><b>建完要 restart Claude Code 才生效</b>;查 available skills list 確認有載到。</li>
+<li>測試:做個匹配的事(「write a PR description for my changes」)→ Claude 會顯示「用了 pr-description skill」→ 依模板照做。</li>
+<li>更新:改 SKILL.md;移除:刪目錄。<b>任何改動都要 restart。</b></li>
+</ul></div>
+
+<h3>8. 匹配機制(背後)</h3>
+<div class="card"><ul>
+<li>啟動時掃 <b>4 個位置</b>,<b>只載 name+description，不載全文</b>(省 context)。</li>
+<li>request 進來 → 比對所有 skill 的 description,用<b>語意匹配</b>(如「explain what this function does」匹配 description「explain code with visual diagrams」,因意圖重疊)。</li>
+<li>匹配到 → <b>跳確認</b>讓你知道要載什麼 context → 你確認後才讀完整 SKILL.md 並照做。</li>
+</ul></div>
+
+<h3>9. ⭐ 優先序階層（名稱衝突時誰贏）</h3>
+<div class="card"><b>Enterprise → Personal → Project → Plugins</b>(左高右低)
+<table>
+<tr><th>優先</th><th>層級</th><th>位置</th></tr>
+<tr><td>最高</td><td><b>Enterprise</b></td><td>managed settings(公司強制標準)</td></tr>
+<tr><td>↓</td><td><b>Personal</b></td><td><code>~/.claude/skills</code></td></tr>
+<tr><td>↓</td><td><b>Project</b></td><td>repo 的 <code>.claude/skills</code></td></tr>
+<tr><td>最低</td><td><b>Plugins</b></td><td>已安裝的 plugins</td></tr>
+</table>
+<div class="key">同名 → 高優先勝(公司 enterprise「code-review」蓋過你 personal 同名)。<b>避免衝突用描述性名</b>:<code>frontend-review</code> 別只叫 <code>review</code>。</div></div>
+
+<h3>10. Metadata 欄位（frontmatter）</h3>
+<div class="card"><table>
+<tr><th>欄位</th><th>必/選</th><th>規格</th></tr>
+<tr><td><code>name</code></td><td>必</td><td>小寫/數字/hyphen，≤64 字，配目錄名</td></tr>
+<tr><td><code>description</code></td><td>必</td><td>≤1024 字，<b>最重要</b>(匹配依據)</td></tr>
+<tr><td><code>allowed-tools</code></td><td>選</td><td>限制 skill 啟用時可用的工具</td></tr>
+<tr><td><code>model</code></td><td>選</td><td>指定該 skill 用哪個模型</td></tr>
+</table>
+<div class="key">好 description 答兩問:<b>做什麼 + 何時用</b>。不觸發 → 加「你實際會怎麼講」的關鍵字。</div></div>
+
+<h3>11. allowed-tools 限工具（guardrail）</h3>
+<div class="card">skill 啟用時<b>只能用列出的工具</b>,適合 read-only / 安全敏感流程。
+<pre><code>allowed-tools: Read, Grep, Glob, Bash
+# = 只能讀+搜+跑,不能 edit/write</code></pre>
+<b>省略 = 不限制</b>,用 Claude 正常權限模型。</div>
+
+<h3>12. Progressive Disclosure + Scripts</h3>
+<div class="card"><ul>
+<li>skill 和對話<b>共用 context window</b> → SKILL.md 保持 <b>&lt;500 行</b>,細節拆到附屬檔,Claude <b>需要才讀</b>(像目錄,不是整本書)。</li>
+<li>目錄慣例:<code>scripts/</code>(可執行) · <code>references/</code>(文件) · <code>assets/</code>(圖/模板)。例:問系統設計才載 <code>architecture-guide.md</code>,問別的就不載。</li>
+<li><b>Scripts 執行不載入內容進 context,只有 output 吃 token</b> → 指示 Claude「<b>run 它,別 read 它</b>」。適合:環境驗證、資料轉換、需可靠的操作(tested code 勝 generated code)。</li>
+</ul></div>
+
+<h3>13. ⭐ Skills vs CLAUDE.md / Subagents / Hooks / MCP（選對工具）</h3>
+<div class="card"><table>
+<tr><th>功能</th><th>觸發/載入</th><th>用於</th></tr>
+<tr><td><b>CLAUDE.md</b></td><td>每個對話都載(always-on)</td><td>專案標準、約束(「never 改 DB schema」)、風格</td></tr>
+<tr><td><b>Skills</b></td><td><b>request-driven</b>(匹配 request 才載)</td><td>任務專屬知識、有時才相關的程序</td></tr>
+<tr><td><b>Subagents</b></td><td><b>隔離 context</b>,收任務獨立跑回傳</td><td>委派工作、要不同工具權限、要隔離</td></tr>
+<tr><td><b>Hooks</b></td><td><b>event-driven</b>(存檔/工具呼叫時 fire)</td><td>自動 side effect、呼叫前驗證、每次存檔跑 linter</td></tr>
+<tr><td><b>MCP servers</b></td><td>—</td><td>外部工具/整合(不同類別)</td></tr>
+</table>
+<div class="key">心法:<b>各司其職,組合用,別硬塞進 skill</b>。request-driven=Skill、always-on=CLAUDE.md、隔離=Subagent、event=Hook、外部工具=MCP。</div></div>
+
+<h3>14. 分享 / 散布 skill（3 法）</h3>
+<div class="card"><table>
+<tr><th>方法</th><th>怎麼做</th><th>適合</th></tr>
+<tr><td><b>Repository</b></td><td><code>.claude/skills</code> commit → clone/pull 自動有</td><td>團隊標準、專案 workflow(<code>.claude</code> 含 agents/hooks/skills/settings 都版控)</td></tr>
+<tr><td><b>Plugins</b></td><td>打包到 marketplace → 別人 install</td><td>非專案專屬、社群可用</td></tr>
+<tr><td><b>Enterprise</b></td><td>管理員 managed settings org-wide,<b>最高優先</b></td><td>mandatory 標準/合規/安全(<code>strictKnownMarketplaces</code> 控 plugin 來源)</td></tr>
+</table></div>
+
+<h3>15. ⭐ Skills + Subagents（重要 gotcha）</h3>
+<div class="card"><div class="key">🔴 <b>subagent 不會自動看到你的 skills</b>(啟動是 fresh clean context)。</div>
+<ul>
+<li><b>內建 agent(Explorer / Plan / Verify)完全不能用 skills。</b></li>
+<li><b>自訂 subagent</b> 可以,但要在 frontmatter 的 <code>skills:</code> 欄位<b>明列</b>;skills 在 <b>subagent 啟動時載</b>(非 on-demand)。</li>
+</ul>
+自訂 agent frontmatter(<code>.claude/agents</code>,<code>/agents</code> 建):
+<pre><code>tools: Bash, Glob, Grep, Read, ..., Skill
+model: sonnet
+skills: accessibility-audit, performance-check</code></pre>
+適合:隔離委派+特定專長、不同 subagent 配不同 skills(frontend vs backend reviewer)、不靠 prompt 強制標準。</div>
+
+<h3>16. 疑難排解（troubleshooting）</h3>
+<div class="card"><table>
+<tr><th>症狀</th><th>解</th></tr>
+<tr><td>先做</td><td><b>skills validator/verifier</b>(uv 裝)先抓結構問題</td></tr>
+<tr><td>不觸發</td><td>幾乎都是 <b>description</b> → 加你實際會講的 trigger phrases</td></tr>
+<tr><td>不載入</td><td>SKILL.md 要在<b>具名目錄內</b>(非 skills root)、檔名剛好 <code>SKILL.md</code>(大寫 SKILL 小寫 md);<code>claude --debug</code> 看錯誤</td></tr>
+<tr><td>用錯 skill</td><td>descriptions 太像 → 寫更 <b>distinct</b></td></tr>
+<tr><td>被蓋掉</td><td>高優先同名蓋掉 → 改名(較易)或找 admin</td></tr>
+<tr><td>plugin skills 沒出現</td><td>清 cache、restart、reinstall</td></tr>
+<tr><td>runtime 錯</td><td>missing deps(裝+寫進 description)、permissions(<code>chmod +x</code>)、path 一律 <b>forward slash</b>(Win 也是)</td></tr>
+</table></div>
+
+<div class="exam"><b>🎯 扣 CCAR-F 考點</b>：
+<ul>
+<li><b>選對 customization</b>(D3 常考):always-on→CLAUDE.md / request→Skill / 隔離→Subagent / event→Hook / 外部→MCP。這五個「何時載入/觸發」要分清。</li>
+<li>🔴 <b>subagent 不自動繼承 skills</b>:內建 agent 完全不能用;自訂 agent 要 frontmatter <code>skills:</code> 明列、啟動時載 ← 呼應 D1 subagent context 隔離。</li>
+<li><code>allowed-tools</code> / <code>model</code> frontmatter + progressive disclosure(SKILL.md &lt;500 行、scripts run-not-read 省 context)← 考綱明列 + D5 context 管理。</li>
+<li>優先序 Enterprise→Personal→Project→Plugins。</li>
+<ul>
+<li><b>Domain 3</b>：<code>.claude/skills</code> + <code>SKILL.md</code> frontmatter(name/description;考綱還提 <code>context: fork</code> / <code>allowed-tools</code> / <code>argument-hint</code>)。personal vs project <b>scope</b>(呼應 subagent scope、CLAUDE.md 階層)。</li>
+<li><b>優先序 Enterprise→Personal→Project→Plugins</b> ← 新考點,名稱衝突誰贏要記。</li>
+<li><b>Domain 2</b>：Skills = prompt <b>重用</b>策略之一。</li>
+<li>常考區分：<b>Skills 自動匹配 / CLAUDE.md 每次載 / Slash 手動</b>——三者何時載入要分清。</li>
+<li>💡 你的 <code>~/.claude/CLAUDE.md</code> 就有「Domain Skill」機制——你<b>本來就在用 skills</b>,這門對你是盤點已知。</li>
 </ul></div>
 
 <div class="foot">CCAR-F 課程筆記 · Academy 課程之個人整理 · 非官方教材</div>
