@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>② Building with the Claude API — 課程筆記</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.65;font-size:15.5px}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.25rem}.top p{margin:0;opacity:.94;font-size:.86rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.85em;font-family:"SF Mono",Menlo,Consolas,monospace}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 15px;margin:12px 0;font-size:.9rem}
+.toc a{display:inline-block;margin:2px 9px 2px 0}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:26px 0 6px;font-size:1.12rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 15px;margin:9px 0;box-shadow:0 1px 5px rgba(0,0,0,.04)}
+.card b.t{color:var(--accent2)}@media(prefers-color-scheme:dark){.card b.t{color:var(--accent)}}
+ul{margin:4px 0;padding-left:19px}li{margin:3px 0;font-size:.9rem}
+.exam{background:var(--blbg);border-left:4px solid var(--bl);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.89rem}
+.exam b{color:var(--bl)}@media(prefers-color-scheme:dark){.exam b{color:#8ab8e0}}
+.key{background:var(--ybg);border-left:4px solid var(--y);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:.88rem}
+table{width:100%;border-collapse:collapse;font-size:.86rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff}
+.dchip{display:inline-block;background:var(--blbg);color:var(--bl);border-radius:11px;padding:0 7px;font-size:.72rem;font-weight:700;margin-left:4px}
+@media(prefers-color-scheme:dark){.dchip{color:#8ab8e0}}
+.foot{color:var(--muted);font-size:.8rem;margin-top:34px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="notes.html">← 回課程筆記</a>
+<div class="top"><h1>② Building with the Claude API</h1><p>Academy 課程完整收整（涵蓋 API / prompt engineering / eval / tool use / RAG / MCP / Claude Code / agents）。<span class="dchip">D#</span> = 對應 CCAR-F 考域。這門也是 <b>CCDV-F（Developer）</b>的主戰場。</p></div>
+
+<div class="toc"><b>模組</b><br>
+<a href="#a">A. 模型與 API 基礎</a><a href="#b">B. 控制輸出</a><a href="#c">C. Prompt Eng &amp; Eval</a><a href="#d">D. Tool Use</a><a href="#e">E. RAG</a><a href="#f">F. 進階功能</a><a href="#g">G. MCP</a><a href="#h">H. Claude Code &amp; Agents</a><a href="#exam">🎯 考點對照</a></div>
+
+<h2 class="ch" id="a">A. 模型與 API 基礎</h2>
+<div class="card"><b class="t">Claude 三模型選型</b><span class="dchip">D4</span>
+<table><tr><th></th><th>Opus</th><th>Sonnet</th><th>Haiku</th></tr>
+<tr><td>定位</td><td>最高智能、深度推理/規劃</td><td>智能/速度/成本平衡，強 coding</td><td>最快最省，無推理</td></tr>
+<tr><td>適合</td><td>複雜多步、需 reasoning</td><td>多數實務、精準改碼</td><td>即時互動、高量處理</td></tr></table>
+選型：<b>要聰明→Opus，要快→Haiku，平衡→Sonnet</b>。實務常在同一應用<b>依任務混用多模型</b>。三者共通(文字/coding/看圖)，差在最佳化取向。</div>
+
+<div class="card"><b class="t">API 存取流程（5 步）</b>
+<ul><li>Client 把使用者輸入送到<b>你的 server</b>（絕不從 client 直接打 Anthropic API → 保護 key）。</li><li>Server 用 SDK(Python/TS/JS/Go/Ruby)或 HTTP 打 API，必帶：<code>api key + model + messages + max_tokens</code>。</li><li>文字生成 4 階段：<b>Tokenization</b>(切 token)→<b>Embedding</b>(轉數字)→<b>Contextualization</b>(依鄰近 token 調整語意)→<b>Generation</b>(算下一字機率+隨機挑，重複)。</li><li>停止：達 <code>max_tokens</code> 或生成 <code>end_of_sequence</code> token。</li><li>回傳：text + usage + <code>stop_reason</code> → server → client。</li></ul></div>
+
+<div class="card"><b class="t">發 Request</b><span class="dchip">D4</span>
+<ul><li><code>client.messages.create(model, max_tokens, messages)</code>。<code>max_tokens</code>=安全上限，非目標長度。</li><li>訊息 = list of dict：<code>{"role":"user"/"assistant", "content":"..."}</code>。</li><li>取純文字：<code>message.content[0].text</code>。</li><li>setup：pip install anthropic python-dotenv → <code>.env</code> 放 <code>ANTHROPIC_API_KEY</code>(版控忽略)→ dotenv 載入 → 建 client。</li></ul></div>
+
+<div class="card"><b class="t">多輪對話</b><span class="dchip">D5</span>
+<div class="key">⚠️ <b>API 完全 stateless，不存任何訊息</b>，每次請求獨立、無記憶。</div>
+解法：<b>自己在程式維護 messages list，每次把完整對話史一起送</b>。流程：送 user → 收 assistant → append 進 history → 加新 user → 再送完整 history。helper：<code>add_user_message</code> / <code>add_assistant_message</code> / <code>chat</code>。</div>
+
+<h2 class="ch" id="b">B. 控制輸出</h2>
+<div class="card"><b class="t">System Prompts</b><span class="dchip">D4</span> 用 <code>system=</code> 傳字串。控制<b>「怎麼回」不是「回什麼」</b>：第一行給角色(You are a patient math tutor)+行為指令。同問題因角色不同而不同對待。None 時整個排除 system 參數。</div>
+<div class="card"><b class="t">Temperature（0–1）</b><span class="dchip">D4</span> 控隨機性。<b>0=deterministic</b>(永選最高機率 token)；高=更創意/意外。低→擷取/事實(一致)；高→腦力激盪/創作。高值只是<b>提高變異機率</b>，不保證不同。</div>
+<div class="card"><b class="t">Response Streaming</b> chunk-by-chunk 顯示(回應可能 10–30 秒)。事件：<code>message_start</code>→<code>content_block_start</code>→<b><code>content_block_delta</code>(含文字 chunk，最重要)</b>→<code>content_block_stop/message_stop</code>。<code>client.messages.stream()</code> 的 <code>text_stream</code> 取純文字；<code>get_final_message()</code> 組完整訊息存 DB。</div>
+<div class="card"><b class="t">Pre-fill Assistant + Stop Sequences</b><span class="dchip">D4</span>
+<ul><li><b>Pre-fill</b>：在 messages 尾端手動加一則 assistant 訊息 → Claude 從<b>那段結尾接續</b>(要自己把 prefill+回應拼起來)。</li><li><b>Stop sequence</b>：生成到指定字串<b>立即停</b>，該字串<b>不含</b>在輸出。</li></ul></div>
+<div class="card"><b class="t">Structured Data（prefill + stop）</b><span class="dchip">D4</span> 要 raw JSON/code 無多餘說明：user 要資料 → assistant prefill <code>```json</code> → stop <code>```</code>。任何結構化型別通用，輸出可直接 parse。</div>
+<div class="card"><b class="t">Extended Thinking</b><span class="dchip">D5</span> 生成前先推理，提升複雜任務準度但加成本/延遲。<code>thinking_budget</code> 最少 1024，<b><code>max_tokens</code> 必須 &gt; thinking_budget</b>。回應含 thinking block(帶簽章防竄改)+ text block。prompt 優化後仍不夠準才開，用 eval 判斷。</div>
+
+<h2 class="ch" id="c">C. Prompt Engineering &amp; Eval</h2>
+<div class="card"><b class="t">Prompt Evaluation</b><span class="dchip">D4</span> 工程師常<b>測不足</b>：測一兩次就上線(陷阱)/自訂幾例微調(陷阱)/<b>跑 eval pipeline 客觀評分(正解)</b>。</div>
+<div class="card"><b class="t">Eval Workflow（6 步）</b><span class="dchip">D4</span> ①寫 prompt 草稿 ②建 eval dataset(3 例到數千，手寫或 LLM 產)③把 input 帶進 prompt ④收 Claude 回應 ⑤grader 評分(如 1–10)取平均 ⑥依分數迭代、比版本。無標準方法，可自建簡單版。</div>
+<div class="card"><b class="t">Grading 三種</b><span class="dchip">D4</span>
+<ul><li><b>Code grader</b>：程式檢查(長度/關鍵字/語法 valid/可讀性)。<code>validate_json/python/regex</code> valid=10、error=0。</li><li><b>Model grader</b>：另發一次 API 評分，要 prompt 求<b>strengths/weaknesses/reasoning/score</b>(別只要 score 否則給中庸分)，JSON 輸出。</li><li><b>Human grader</b>：最彈性但耗時。</li></ul>最終分常 = (model_score + syntax_score)/2。</div>
+<div class="card"><b class="t">Prompt 技巧</b><span class="dchip">D4</span>
+<ul><li><b>Clear &amp; Direct</b>：第一行用 <b>action verb</b> 開頭直指任務(Write/Identify/Generate…)。</li><li><b>Being Specific</b>：Type A <b>attributes</b>(要的品質/格式，幾乎每個 prompt 都用)+ Type B <b>steps</b>(給推理步驟，複雜題用)。範例分數 3.92→7.86。</li><li><b>XML tags</b>：把插入的內容用描述性標籤包(<code>&lt;sales_records&gt;</code> 勝 <code>&lt;data&gt;</code>)，幫模型分辨區塊；短內容也值得包。</li><li><b>Examples(one/multi-shot)</b>：用 XML 包 sample input+ideal output，放在指令之後；加「為何這是理想輸出」的說明；corner case(諷刺偵測)特別有效；用 eval 最高分例當範本。</li></ul></div>
+
+<h2 class="ch" id="d">D. Tool Use</h2>
+<div class="card"><b class="t">概念與流程</b><span class="dchip">D2</span> 讓 Claude 取訓練資料外的即時資訊。5 步：送 request+工具 → Claude 判斷要不要+要哪個 → server 跑 code 取資料 → 帶資料再送 → Claude 產最終回應。</div>
+<div class="card"><b class="t">Tool Functions &amp; Schemas</b><span class="dchip">D2</span>
+<ul><li>Tool function=普通 Python 函式；<b>命名要描述性、驗證輸入、error 訊息要有意義</b>(error 給 Claude 看，它可重試)。</li><li>Schema：<code>name</code> + <code>description</code>(3–4 句：做什麼/何時用/回什麼)+ <code>input_schema</code>(JSON schema)。用 <code>ToolParam()</code> 包避免型別錯。產 schema 技巧：拿函式到 claude.ai + 附官方 tool use 文件，請它生。</li></ul></div>
+<div class="card"><b class="t">Message Blocks &amp; Tool Results</b><span class="dchip">D2</span>
+<ul><li>assistant 回應可含<b>多 block</b>：text block + tool_use block(函式名+參數)。</li><li>tool result block：<code>tool_use_id</code>(配對原請求)+ <code>content</code>(輸出轉字串)+ <code>is_error</code>。<b>放在 user 訊息</b>，不是 assistant。</li><li>follow-up 要帶<b>完整 history + 原本的 tool schemas</b>(即使不再用工具)。</li><li>要把<b>整個 <code>response.content</code>(所有 block)</b> append 進 history，不是只 text。</li></ul></div>
+<div class="card"><b class="t">Multi-turn Tool（while loop）</b><span class="dchip">D1</span> 一個問題可能鏈式用多工具。<code>run_conversation</code>：呼叫 Claude → 加回應進 history → <b>檢查 <code>stop_reason</code>：!="tool_use" 就 break</b>；="tool_use" 就 <code>run_tools</code>(過濾 type=tool_use 的 block、各跑、回 tool_result list)→ 加結果為 user 訊息 → 重複。<code>run_tool</code>=用 if 分派工具名。try/except 包執行(成功 is_error=false，失敗 true+error)。</div>
+<div class="card"><b class="t">Batch / Fine-grained / Structured</b><span class="dchip">D2</span>
+<ul><li><b>Batch tool</b>：Claude 少主動並行 → 給一個 batch 工具收 invocations list，一次跑多工具(單一 request-response)。</li><li><b>Fine-grained tool calling</b>(<code>fine_grained:true</code>)：關 API 端 JSON 驗證，chunk 即時送(較快但可能 invalid JSON，要 client 端處理)。預設=慢但驗證過。</li><li><b>Tools for structured data</b>：比 prefill 法更可靠但較複雜。定 JSON schema 當工具輸入，<b>強制 <code>tool_choice={"type":"tool","name":"..."}</code></b>，從 <code>response.content[0].input</code> 取結構化資料(不需 tool result)。</li></ul></div>
+<div class="card"><b class="t">內建工具</b><span class="dchip">D2</span> <b>Text Editor</b>(唯一內建進 Claude 的 schema，實作要自己寫檔案操作；schema type 依模型版本不同)；<b>Web Search</b>(<code>web_search_20250305</code>，<code>max_uses</code> 預設 5、<code>allowed_domains</code> 限域，回 search result + citation block，無需自寫 code)。</div>
+
+<h2 class="ch" id="e">E. RAG（Retrieval Augmented Generation）</h2>
+<div class="card"><b class="t">概念</b><span class="dchip">D3</span> 大文件(百千頁)查特定資訊。全塞 prompt=撞 token 上限/變貴變慢/效果降。RAG：<b>切 chunk → 只找相關 chunk 放進 prompt</b>。省成本、可擴展，但要前處理+搜尋機制。</div>
+<div class="card"><b class="t">Chunking 策略</b><span class="dchip">D3</span> chunking 品質直接決定 RAG 成敗。①<b>Size-based</b>(等長，最常用，會切斷字→用 <b>overlap</b> 補上下文)②<b>Structure-based</b>(依標題/段落，需結構化文件如 markdown)③<b>Semantic-based</b>(NLP 依語意分組，最進階)。<b>無萬用最佳法</b>，看文件結構與用途。</div>
+<div class="card"><b class="t">Embeddings &amp; Semantic Search</b> embedding=文字語意的數字向量(-1~+1)。semantic search 用向量找相關 chunk(語意相似而非關鍵字)。Anthropic 建議 <b>Voyage AI</b> 產 embedding。</div>
+<div class="card"><b class="t">完整 RAG Flow（7 步）</b> chunk → embed → normalize(scale 到 1.0)→ 存 vector DB → query 轉 embedding → <b>cosine similarity</b> 找最近 → 組 prompt。cosine sim 越近 1 越像；cosine distance=1−sim 越近 0 越像。前處理(1–4)+ 即時檢索(5–7)。</div>
+<div class="card"><b class="t">進階檢索</b>
+<ul><li><b>BM25</b>(lexical)：補語意搜尋抓不到的精確字。稀有字權重高、常見字低。<b>Hybrid</b>=語意+BM25 並行後合併。</li><li><b>Multi-index + RRF</b>(Reciprocal Rank Fusion)：<code>RRF=Σ 1/(rank+1)</code>，兩法都排前的文件勝出。</li><li><b>Reranking</b>：檢索後用 LLM 依相關性重排(用 doc id 省 token)，增準度但加延遲。</li><li><b>Contextual Retrieval</b>：embed 前先給每個 chunk 加「它在原文的情境」→ chunk 不失上下文。大文件用選擇性情境(開頭 1–3 chunk + 目標前幾個)。</li></ul></div>
+
+<h2 class="ch" id="f">F. 進階功能</h2>
+<div class="card"><b class="t">Image / PDF</b> image block(base64 或 URL，單訊息可多張，最多 100，耗 token)。<b>圖片準度靠 prompt 功力</b>(step-by-step/多 shot/驗證步驟)，非圖質。PDF：type=<code>document</code>、media=<code>application/pdf</code>，可讀文字+圖+表+圖表。</div>
+<div class="card"><b class="t">Citations</b> <code>"citations":{"enabled":true}</code> + <code>title</code>。PDF 用 <code>citation_page_location</code>、純文字用 <code>citation_char_location</code>。讓使用者查證來源，非憑記憶回答。</div>
+<div class="card"><b class="t">Prompt Caching</b><span class="dchip">D5</span> 重用前次輸入處理的計算，加速+省錢。
+<div class="key">規則：<b>快取 1 小時</b>；要手動加 <code>cache_control:{"type":"ephemeral"}</code>(需長格式 text block)；<b>順序 tools → system → messages</b>；breakpoint 前所有內容一起快取；<b>前面任何改動使整個快取失效</b>；最少 <b>1024 token</b> 才快取；<b>最多 4 個 breakpoint</b>(多層、可部分命中)。</div>
+usage：<code>cache_creation_input_tokens</code>(首次寫)/<code>cache_read_input_tokens</code>(命中讀)。最佳用途=重複的 system prompt / tool 定義 / 靜態前綴。</div>
+<div class="card"><b class="t">Code Execution &amp; Files API</b> Files API：先上傳拿 file ID，之後用 ID 引用(不用每次塞原始資料)。Code Execution：Claude 在<b>隔離 Docker</b>跑 Python(<b>無網路</b>，資料靠 Files API 進出)，可多次執行、產檔(圖/報告)供下載。</div>
+
+<h2 class="ch" id="g">G. MCP（Model Context Protocol）</h2>
+<div class="card"><b class="t">概念</b><span class="dchip">D2</span> 通訊層，把 tool 的<b>定義與執行從你的 app 搬到 MCP server</b>，省去自己寫一堆 tool schema/函式(如 GitHub 要做 repo/PR/issue 一堆工具)。MCP 與 tool use <b>互補</b>：MCP 決定「誰做」(server vs 你)，都還是 tools。server 常由服務商官方出。</div>
+<div class="card"><b class="t">Client &amp; 訊息</b><span class="dchip">D2</span> MCP client=你的 server 與 MCP server 的介面，<b>transport 無關</b>(stdio/HTTP/WebSocket)。四訊息：list tools request/result、call tool request/result。流程：user→server 向 client 要工具清單→轉發 MCP server→回清單→送 Claude→Claude 要執行→client 呼叫 MCP server 跑→結果回鏈。</div>
+<div class="card"><b class="t">SDK 定義</b><span class="dchip">D2</span> <code>@mcp.tool</code> 從 Python 函式簽章<b>自動生 schema</b>(免手寫 JSON)；參數用 <code>Field()</code> 加描述。debug 用 <b>MCP Inspector</b>(<code>mcp dev server.py</code> 開瀏覽器手動測工具)。</div>
+<div class="card"><b class="t">Resources vs Prompts</b><span class="dchip">D2</span>
+<ul><li><b>Resources</b>：server 曝資料給 client 讀。direct(靜態 URI <code>docs://documents</code>)/templated(<code>docs://documents/{id}</code>)。<code>@mcp.resource</code> + MIME type。<b>Resource 主動提供資料(@ 提及即抓)，Tool 被動執行動作(Claude 決定才叫)</b>。</li><li><b>Prompts</b>：server 端<b>預先寫好、測過</b>的高品質 prompt 模板，client 端變 slash command 選用。<code>@mcp.prompt</code> 回 messages list。</li></ul></div>
+
+<h2 class="ch" id="h">H. Claude Code &amp; Agents</h2>
+<div class="card"><b class="t">Claude Code 基礎</b><span class="dchip">D3</span>
+<ul><li>裝：Node.js → npm install → <code>claude</code> 登入。內建搜尋/讀/改檔 + web fetch/terminal + MCP client。</li><li><code>init</code>=掃 codebase 架構/風格產 <b>claude.md</b>(後續自動載入的 context)。memory 三種：Project(共享)/Local/User。<code>#</code> 加筆記進 memory；可手動改 claude.md 或重跑 init。</li><li>Prompt 法：<b>三步</b>(找檔分析→描述功能請它規劃不寫碼→請它實作)或 <b>TDD</b>(給 context→請它建議測試→選並實作→寫碼到測試過)。「更詳細指令=更好結果」，當協作工程師不是產碼機。</li></ul></div>
+<div class="card"><b class="t">Claude Code 進階</b><span class="dchip">D3</span>
+<ul><li><b>加 MCP</b>：<code>claude mcp add [name] [startup-cmd]</code>，重啟後可用(Sentry/Jira/Slack…)。</li><li><b>平行化</b>：多 Claude 同改同檔會衝突 → 用 <b>git worktrees</b> 隔離工作區(各對應一 branch)。自訂命令放 <code>.claude/commands/*.md</code>(用 <code>$ARGUMENTS</code>)。</li><li><b>自動除錯</b>：GitHub Action 每日抓 CloudWatch log → Claude 找錯/去重/產修 → 開 PR(抓 production-only 錯，如環境間 config 差異)。</li></ul></div>
+<div class="card"><b class="t">Computer Use</b> Claude 靠<b>視覺觀察+控制</b>(截圖→點/打字/導航)做多步任務(QA 測試自動化)。在隔離 Docker 跑。本質=tool 系統(schema 有 mouse move/click/screenshot)+ 開發者提供的運算環境(Anthropic 給 reference Docker)。Claude 不直接操控電腦。</div>
+<div class="card"><b class="t">Agents vs Workflows</b><span class="dchip">D1</span>
+<div class="key">判準：<b>步驟清楚→workflow；細節不明→agent</b>。</div>
+<ul><li><b>Workflow</b>=為特定問題、步驟預定的一連串 Claude 呼叫。模式：<b>Chaining</b>(拆序列步驟，破解 constraint-heavy prompt)、<b>Parallelization</b>(拆平行子任務→aggregator 合)、<b>Routing</b>(先分類→路由到專門 pipeline)、<b>Evaluator-Optimizer</b>(producer 產→evaluator 評→loop 到接受，如 圖→3D 模型)。</li><li><b>Agent</b>=自己擬計畫、用工具完成任務(細節不明時用)。</li></ul>
+<b>關鍵</b>：認出 pattern ≠ 自動實作，仍要寫 code。</div>
+
+<h2 class="ch" id="exam">🎯 考點對照</h2>
+<div class="exam"><b>對 CCAR-F（你的目標）</b>：
+<ul>
+<li><b>D1</b>：multi-turn tool 的 <code>stop_reason=="tool_use"</code> while loop、agent vs workflow 判準、evaluator-optimizer/chaining/parallelization/routing ← 直接是 Domain 1 考點。</li>
+<li><b>D2</b>：tool schema(name/description/input_schema)、tool_result 的 <code>is_error</code>/<code>tool_use_id</code>、<code>tool_choice</code> 強制、batch 並行、MCP(client/resources/prompts/自動生 schema)、內建工具 ← Domain 2 主力。</li>
+<li><b>D3</b>：Claude Code(claude.md/init/memory/worktrees 平行/<code>.claude/commands</code>)、RAG chunking ← Domain 3。</li>
+<li><b>D4</b>：clear&direct/specific(attr vs steps)/XML/examples、structured output(prefill+stop 或 tool_use+schema)、system prompt、temperature ← Domain 4。</li>
+<li><b>D5</b>：多輪 stateless 帶完整 history、prompt caching 規則、extended thinking、context 管理 ← Domain 5。</li>
+</ul>
+<b>對 CCDV-F</b>：這整門幾乎就是 Developer 證 <b>Applications & Integration(33%)</b> + Tools&MCPs + Model Selection 的內容——若你之後也想收 CCDV-F，這頁直接通用。</div>
+
+<div class="foot">② Building with the Claude API · Academy 課程個人整理 · 非官方教材</div>
+</div></body></html>
