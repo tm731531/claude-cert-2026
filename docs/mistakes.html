@@ -39,12 +39,12 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 <h2 class="ch">📊 各域錯題統計（弱點雷達）</h2>
 <div class="tally">
 <div class="d"><b>2</b>D1（evaluator-opt + env-inspect）</div>
-<div class="d hot"><b>4</b>D2 Tool/MCP ← 弱點</div>
+<div class="d"><b>1</b>D2（MCP 已攻克 ✅，剩 batch）</div>
 <div class="d"><b>0</b>D3 Claude Code</div>
 <div class="d hot"><b>4</b>D4 Eval + Prompt ← 主要弱點</div>
 <div class="d"><b>0</b>D5 Context/Reliability</div>
 </div>
-<div class="note">🎯 <b>弱點已收斂成 3 個「名詞」</b>（不是整個域）：<br>① <b>Model grader</b>（D4，❗連錯 2 次）= 另一個 AI 模型評分<br>② <b>Evaluator-Optimizer</b>（D1，❗連錯 2 次）= 檢查+改進迴圈<br>③ <b>Environment Inspection</b>（D1）= agent 觀察自己動作的結果<br>MCP(D2)綜合 quiz 已全對、workflow-vs-agent 也過關。<b>剩這 3 個名詞背死 = 幾乎滿分。</b></div>
+<div class="note">🎯 <b>弱點已收斂成 3 個「名詞」</b>（不是整個域）：<br>① <b>Model grader</b>（D4，❗連錯 2 次）= 另一個 AI 模型評分<br>② <b>Evaluator-Optimizer</b>（D1，❗連錯 2 次）= 檢查+改進迴圈<br>③ <b>Environment Inspection</b>（D1）= agent 觀察自己動作的結果<br>MCP(D2)重測 7/7 全對已攻克、workflow-vs-agent 也過關。<b>剩這 3 個名詞背死 = 幾乎滿分。</b></div>
 
 <h2 class="ch">📝 錯題清單</h2>
 
@@ -102,8 +102,10 @@ h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;
 <div class="why">陷阱是「讓工具跑更快」——<b>不是</b>加速單一工具,而是把多個 tool 呼叫塞進<b>一輪</b>,省掉多次往返。關鍵字：<b>parallel / 單一回合</b>。</div>
 </div>
 
+<div class="note" style="background:var(--okbg);border-color:var(--ok)">✅ <b>MCP D2 已攻克（2026-07-12 重測 7/7 全對）</b>：下面 3 題(Inspector / stdio / Prompts)重測都對了。尤其 <b>Prompts</b> 用「user 控制 workflow」框架答對——這 3 題保留當紀錄，不再是弱點。</div>
+
 <div class="q">
-<div class="meta"><span class="dchip">D2</span><span class="src">MCP 課 · 隨堂</span></div>
+<div class="meta"><span class="dchip" style="background:var(--okbg);color:var(--ok)">D2 · ✅已訂正</span><span class="src">MCP 課 · 隨堂</span></div>
 <div class="qt">建好 MCP server，想在接 Claude 前測試工具，最好的方式？</div>
 <div class="ans">✅ 正解：<b>用瀏覽器裡的 MCP Inspector</b>（<code>mcp dev server.py</code>）</div>
 <div class="why">Inspector = 不接 app 就能手動測工具的 in-browser debugger。別選「直接接 Claude」或「production 測」。</div>
