@@ -43,7 +43,7 @@ th{background:var(--accent);color:#fff}
 
 <h2 class="ch" id="subagents">① Introduction to Subagents</h2>
 <p class="meta">Academy 課程 · 對應 <a href="ccar-f.html">CCAR-F</a> Domain 1（Agentic Architecture 27%）+ Domain 3（Claude Code Config）
-<br>🎬 <a href="https://www.youtube.com/watch?v=jKErNxuxPXg" target="_blank">影片 1：概念</a> · <a href="https://www.youtube.com/watch?v=arD6qEWa2Xc" target="_blank">影片 2：建立</a> · <a href="https://www.youtube.com/watch?v=WPxWKT_OaU4" target="_blank">影片 3：有效 pattern</a> · <a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">課程頁</a></p>
+<br>🎬 <a href="https://www.youtube.com/watch?v=jKErNxuxPXg" target="_blank">影片 1：概念</a> · <a href="https://www.youtube.com/watch?v=arD6qEWa2Xc" target="_blank">影片 2：建立</a> · <a href="https://www.youtube.com/watch?v=WPxWKT_OaU4" target="_blank">影片 3：有效 pattern</a> · <a href="https://www.youtube.com/watch?v=n5LoKZ8Oa-A" target="_blank">影片 4：何時用/別用</a> · <a href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank">課程頁</a></p>
 
 <h3>1. 什麼是 subagent</h3>
 <div class="card"><ul>
@@ -154,6 +154,32 @@ code review 範例輸出格式：
 </table></div>
 
 <div class="key">🧩 <b>小結：有效 subagent 的 4 特徵</b>—— ① 具體 description（控何時 launch + 收什麼指令）② 結構化輸出（知道何時做完、回可用資訊）③ 障礙回報（主線不用重新發現）④ 限工具（唯讀給 research、bash 給 reviewer、edit/write 只給該改碼的）。四個各自簡單，合起來把 subagent 從「模糊地想幫忙」變成「準時完成、清楚回報的專注 worker」。</div>
+
+<h3>9. 何時該用 / 何時別用 subagent</h3>
+<div class="card"><div class="key">🧭 <b>唯一判準</b>：中間過程對主線重不重要。exploration 與 execution 可分開 → 委派；<b>每一步都依賴前一步的發現 → 留主線</b>（別委派）。</div></div>
+
+<div class="card"><b>✅ subagent 發光的三個甜區</b>
+<ul>
+<li><b>Research（經典用法）</b>：查陌生 codebase 的 auth 怎麼運作 → subagent 讀幾十個檔、追函式，全留自己 context，主線只收乾淨摘要（如「JWT 驗證在 <code>middleware/auth.js:42</code>，由 <code>route/api.js</code> 的 Express router 呼叫」）。</li>
+<li><b>Code review</b>：Claude 對「別人寫的碼」review 更犀利；<b>同一 thread 造出來的碼、自己 review 會手軟</b>（因為參與了創作、看不出問題）。reviewer subagent 在獨立 context 跑 <code>git diff</code>、套專屬 review 標準（可寫進 system prompt 讓全團隊一致）。</li>
+<li><b>Custom system prompt</b>：Claude Code 預設 prompt 偏「簡潔、程式導向」。<b>copywriting</b> subagent 給不同的 tone/audience/style（landing page、email 不要技術腔）；<b>styling</b> subagent 指向 design system 檔 → 執行時自動載入你的色彩變數/間距/元件慣例。</li>
+</ul>
+共通：要結果不要流水帳、探索會塞爆主 context、受益於 fresh perspective 或 custom prompt。</div>
+
+<div class="card"><b>⛔ subagent 幫倒忙（3 個 anti-pattern）</b>
+<ul>
+<li><b>Expert Claims</b>：「you are a Python expert」「Kubernetes specialist」<b>沒有價值</b>——Claude 本來就有這知識，所謂專家 subagent 沒有主線做不到的事。</li>
+<li><b>Sequential Pipelines</b>：reproduce→debug→fix 三段 pipeline。只在任務<b>真正獨立</b>時可行；一旦每步依賴前一步的發現（debug 幾乎都是）→ <b>handoff 時資訊流失</b>。</li>
+<li><b>Test Runners</b>：回「tests failed」<b>藏掉你診斷要的完整輸出</b>，逼你再寫 debug script 去撈本來就有的細節。（<b>實測中 test runner 是所有配置裡表現最差的</b>。）</li>
+</ul>
+<div class="key">💡 launch subagent 的 overhead（失去可見性 + 把發現壓成摘要）只有在「subagent 做了主線做不到的事」時才划算。</div></div>
+
+<div class="card" style="border-left:5px solid var(--accent)"><b>🧭 決策規則（一句話記）</b>
+<div class="key">問自己：<b>中間過程重要嗎？</b><br>· <b>不重要</b>（只要最終結果）→ 委派 subagent。<br>· <b>重要</b>（要邊看邊反應）→ 留主線。</div>
+<table>
+<tr><th>✅ 用 subagent</th><th>⛔ 別用 subagent</th></tr>
+<tr><td>Research / 探索<br>Code review<br>需要 custom system prompt 的任務</td><td>沒有真本事的「專家」人設<br>每步依賴前一步的多階段 pipeline<br>跑測試（你需要完整輸出 debug）</td></tr>
+</table></div>
 
 <div class="exam"><b>🎯 扣 CCAR-F 考點</b>：
 <ul>
