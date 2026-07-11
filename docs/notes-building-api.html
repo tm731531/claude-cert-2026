@@ -111,6 +111,15 @@ usage：<code>cache_creation_input_tokens</code>(首次寫)/<code>cache_read_inp
 <div class="card"><b class="t">Resources vs Prompts</b><span class="dchip">D2</span>
 <ul><li><b>Resources</b>：server 曝資料給 client 讀。direct(靜態 URI <code>docs://documents</code>)/templated(<code>docs://documents/{id}</code>)。<code>@mcp.resource</code> + MIME type。<b>Resource 主動提供資料(@ 提及即抓)，Tool 被動執行動作(Claude 決定才叫)</b>。</li><li><b>Prompts</b>：server 端<b>預先寫好、測過</b>的高品質 prompt 模板，client 端變 slash command 選用。<code>@mcp.prompt</code> 回 messages list。</li></ul></div>
 
+<div class="card"><b class="t">🔑 三 primitive「由誰控制」（解 D2 混淆的關鍵框架）</b><span class="dchip">D2</span>
+<table>
+<tr><th>Primitive</th><th>誰控制</th><th>服務誰</th><th>用途 / 例</th></tr>
+<tr><td><b>Tools</b></td><td>model-controlled（Claude 決定何時執行）</td><td>模型</td><td>加能力(算數→跑 JS)</td></tr>
+<tr><td><b>Resources</b></td><td>app-controlled（app code 決定何時抓）</td><td>app</td><td>拿資料進 app(autocomplete、Google Drive 文件清單)</td></tr>
+<tr><td><b>Prompts</b></td><td>user-controlled（user 點按鈕 / slash 觸發）</td><td>使用者</td><td>預定義 workflow(chat starter 按鈕、/format)</td></tr>
+</table>
+<div class="key">判準：要 <b>Claude 能力</b>→Tools；要 <b>app 資料</b>→Resources；要 <b>user workflow</b>→Prompts。<b>「model / app / user 誰控制」比死記定義好用——正是你 D2 錯題(Q6 Prompts)的解方。</b></div></div>
+
 <h2 class="ch" id="h">H. Claude Code &amp; Agents</h2>
 <div class="card"><b class="t">Claude Code 基礎</b><span class="dchip">D3</span>
 <ul><li>裝：Node.js → npm install → <code>claude</code> 登入。內建搜尋/讀/改檔 + web fetch/terminal + MCP client。</li><li><code>init</code>=掃 codebase 架構/風格產 <b>claude.md</b>(後續自動載入的 context)。memory 三種：Project(共享)/Local/User。<code>#</code> 加筆記進 memory；可手動改 claude.md 或重跑 init。</li><li>Prompt 法：<b>三步</b>(找檔分析→描述功能請它規劃不寫碼→請它實作)或 <b>TDD</b>(給 context→請它建議測試→選並實作→寫碼到測試過)。「更詳細指令=更好結果」，當協作工程師不是產碼機。</li></ul></div>
