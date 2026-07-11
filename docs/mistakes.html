@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCAR-F 錯題本</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.65;font-size:15.5px}
+.wrap{max-width:840px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.25rem}.top p{margin:0;opacity:.94;font-size:.87rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.85em;font-family:"SF Mono",Menlo,Consolas,monospace}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:24px 0 8px;font-size:1.1rem}
+.tally{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.tally .d{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 13px;font-size:.85rem;min-width:150px}
+.tally .d b{display:block;font-size:1.5rem;line-height:1.2}
+.tally .d.hot{border-color:var(--bad);background:var(--badbg)}
+.tally .d.hot b{color:var(--bad)}
+.q{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--bad);border-radius:11px;padding:13px 16px;margin:11px 0;box-shadow:0 1px 5px rgba(0,0,0,.04)}
+.q .meta{font-size:.76rem;color:var(--muted);margin-bottom:5px}
+.q .dchip{display:inline-block;background:var(--badbg);color:var(--bad);border-radius:11px;padding:0 8px;font-weight:700;margin-right:5px}
+.q .src{background:var(--blbg);color:var(--bl);border-radius:11px;padding:0 8px}
+@media(prefers-color-scheme:dark){.q .src{color:#8ab8e0}}
+.q .qt{font-weight:600;margin:3px 0 7px}
+.q .ans{background:var(--okbg);border-radius:7px;padding:6px 11px;margin:5px 0;font-size:.9rem}
+.q .ans b{color:var(--ok)}
+.q .why{font-size:.88rem;color:var(--muted);margin-top:5px}
+.note{background:var(--ybg);border-left:4px solid var(--y);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.88rem}
+.foot{color:var(--muted);font-size:.8rem;margin-top:34px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>❌ CCAR-F 錯題本</h1><p>把答錯的題歸類到考域，一眼看出弱點在哪。錯題比對題有價值——這裡累積的每一題都是你考前該優先看的。</p></div>
+
+<h2 class="ch">📊 各域錯題統計（弱點雷達）</h2>
+<div class="tally">
+<div class="d"><b>0</b>D1 Agentic Architecture</div>
+<div class="d"><b>0</b>D2 Tool/MCP</div>
+<div class="d"><b>0</b>D3 Claude Code</div>
+<div class="d hot"><b>3</b>D4 Evaluation ← 主要弱點</div>
+<div class="d"><b>0</b>D5 Context/Reliability</div>
+</div>
+<div class="note">🎯 <b>目前唯一有實證的弱點 = Domain 4（Evaluation, Testing &amp; Optimization）</b>。回去看 <a href="notes-building-api.html#c">模組 C 的 eval 卡</a> 補這塊。</div>
+
+<h2 class="ch">📝 錯題清單</h2>
+
+<div class="q">
+<div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Eval 隨堂</span></div>
+<div class="qt">要為 prompt evaluation 產測試資料集，該用哪個模型來「生成」？</div>
+<div class="ans">✅ 正解：<b>用較快的模型（如 Haiku）</b></div>
+<div class="why">產 dataset 是機械性工作，用<b>快/省</b>的模型即可；把貴的模型留給「被測試的那個 prompt」本身。別選「最貴的模型」。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Eval 隨堂</span></div>
+<div class="qt">eval workflow 中，用 Claude 產生了一批回應之後，下一步是什麼？</div>
+<div class="ans">✅ 正解：<b>把回應丟給 grader 評分</b></div>
+<div class="why">eval 流程順序：寫 prompt → 建 dataset → 產回應 → <b>grade（評分）</b> → 依分數迭代。產完回應不是去部署、也不是再加題，是先量分數。</div>
+</div>
+
+<div class="q">
+<div class="meta"><span class="dchip">D4</span><span class="src">Building API · Prompt Eval 隨堂</span></div>
+<div class="qt">哪一種 grader 是「用另一個 AI 模型」來評估輸出品質？</div>
+<div class="ans">✅ 正解：<b>Model grader</b></div>
+<div class="why">三種 grader：<b>Code grader</b>=程式檢查(語法/長度/valid)；<b>Model grader</b>=<b>另發一次 API 讓模型評分</b>(最有彈性)；<b>Human grader</b>=人工。別跟 code/syntax grader 搞混。</div>
+</div>
+
+<div class="foot">CCAR-F 錯題本 · 邊上課邊累積 · 上完把錯題貼給我即歸類</div>
+</div></body></html>
