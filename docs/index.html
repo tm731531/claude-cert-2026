@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude 認證備考 · CCAR-P</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --rev:#a85a00;--revbg:#fff3e0;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--revbg:#33280f;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+ line-height:1.7;font-size:16.5px}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 70px}
+a{color:var(--accent)}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;
+ padding:22px 22px;margin-bottom:18px}
+.top h1{margin:0 0 6px;font-size:1.4rem}.top p{margin:0;opacity:.94;font-size:.92rem}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.bigbtn{flex:1 1 220px;background:var(--card);border:1px solid var(--line);border-radius:14px;
+ padding:20px;text-decoration:none;color:var(--fg);box-shadow:0 2px 8px rgba(0,0,0,.05);transition:.15s}
+.bigbtn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.bigbtn .ic{font-size:1.8rem}.bigbtn .t{font-weight:700;font-size:1.1rem;margin:6px 0 3px}
+.bigbtn .d{font-size:.86rem;color:var(--muted)}
+.note{background:var(--revbg);border-left:4px solid var(--rev);border-radius:9px;padding:11px 15px;margin:14px 0;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.chip{display:inline-block;background:var(--accent2);color:#fff;border-radius:20px;padding:2px 11px;font-size:.75rem;font-weight:700;margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+th{background:var(--accent);color:#fff;font-weight:700}
+.foot{color:var(--muted);font-size:.82rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<div class="top"><h1>🟤 Claude 認證備考 · Architect</h1><p>Anthropic 官方 Claude 認證（Pearson VUE）備考重點。目標證 = <b>CCAR-P 架構師專業級</b>。全英文考試、63 題 / 120 分鐘 / 720 分過。</p></div>
+<div class="note">⚠️ <b>全英文、禁用瀏覽器翻譯</b>。考試是情境長題幹（scenario-based），選「最佳解」；每題約 1.9 分鐘，配速是門檻不是理解。答案以官方考綱與 Anthropic 官方文件用語為準。</div>
+<div class="btnrow">
+<a class="bigbtn" href="quiz.html"><div class="ic">✍️</div><div class="t">自我測驗</div>
+<div class="d">3 題官方 sample + 依考綱自製練習，打亂選項、即時對答、計分、錯題重練</div></a>
+<a class="bigbtn" href="reference.html"><div class="ic">📖</div><div class="t">考綱速覽</div>
+<div class="d">四張證對照 + CCAR-P 七大考域配分與細目、Tom 落差分析</div></a>
+</div>
+<div class="card"><b>四張證一覽</b>
+<table>
+<tr><th>代碼</th><th>名稱</th><th>費用</th><th>題數/時間</th></tr>
+<tr><td>CCAO-F</td><td>Associate – Foundations</td><td>$99</td><td>60 / 120 分</td></tr>
+<tr><td>CCDV-F</td><td>Developer – Foundations</td><td>$125</td><td>53 / 120 分</td></tr>
+<tr><td>CCAR-F</td><td>Architect – Foundations</td><td>$125</td><td>60 / 120 分</td></tr>
+<tr><td><b>CCAR-P</b></td><td><b>Architect – Professional</b></td><td><b>$175</b></td><td><b>63 / 120 分</b></td></tr>
+</table>
+<span style="color:var(--muted);font-size:.86rem">效期 12 個月 + 免費線上續證 · 每 12 月最多重考 4 次（間隔 14/30/90 天）· Partner tier 可享 5 折或全免</span></div>
+<div class="card"><b>資料來源</b>：<a href="https://www.pearsonvue.com/us/en/anthropic.html" target="_blank">Pearson VUE 官方頁</a> · <a href="https://www.pearsonvue.com/us/en/anthropic.html" target="_blank">CCAR-P 官方考綱 PDF（v1.0, 2026-07）</a>。CCAR-P 的 63 題/720 分/七域配分均以官方 PDF 為準；CCAR-F 逐域配分為第三方整理，報名前以 Partner Academy 內考綱為準。</div>
+<div class="foot">Anthropic Claude Certification 個人備考整理 · 非 Anthropic 官方教材</div>
+</div></body></html>

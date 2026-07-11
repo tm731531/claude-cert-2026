@@ -1,0 +1,9 @@
+# 暫存/系統
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# 例外：GitHub Pages 網站的 HTML 要上傳
+!docs/
+!docs/*.html

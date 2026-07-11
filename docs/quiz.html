@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude 認證 · 自我測驗</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --rev:#a85a00;--revbg:#fff3e0;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--revbg:#33280f;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.7;font-size:16.5px}
+.wrap{max-width:820px;margin:0 auto;padding:16px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.top h1{margin:0 0 5px;font-size:1.25rem}.top p{margin:0;opacity:.94;font-size:.88rem}
+.note{background:var(--revbg);border-left:4px solid var(--rev);border-radius:9px;padding:10px 14px;margin:12px 0;font-size:.87rem}
+.bar{position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:9px;padding:9px 16px;font-size:.92rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.prog{font-size:.9rem;color:var(--muted)}.score{font-size:1.25rem;font-weight:800;color:var(--accent)}
+.selbox{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.selbox label{border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;background:var(--card);font-size:.84rem}
+.selbox input{margin-right:5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.chip{display:inline-block;background:var(--accent2);color:#fff;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:700;margin-right:6px}
+.offi{background:var(--ok)}.mine{background:var(--muted)}
+.q{font-weight:600;margin:8px 0 12px;font-size:1.04rem}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin:7px 0;background:var(--card);cursor:pointer;transition:.12s;font-size:.96rem}
+.opt:hover{border-color:var(--accent)}
+.opt .lb{flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:#efeae5;color:#5c534d;font-weight:700;text-align:center;line-height:24px;font-size:.85rem}
+@media(prefers-color-scheme:dark){.opt .lb{background:#2f2925;color:#a89a92}}
+.opt.correct{background:var(--okbg);border-color:var(--ok)}.opt.correct .lb{background:var(--ok);color:#fff}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}.opt.wrong .lb{background:var(--bad);color:#fff}
+.opt.disabled{cursor:default}
+.ans{background:var(--okbg);border-left:4px solid var(--ok);border-radius:8px;padding:11px 14px;margin-top:10px;font-size:.92rem}
+.foot{color:var(--muted);font-size:.82rem;margin-top:36px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+.hidden{display:none}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>✍️ Claude 認證 · 自我測驗</h1><p>CCAR-P 導向練習。<span class="chip offi">官方</span>=官方考綱 sample 題；<span class="chip mine">自製</span>=依考綱自製，非官方、答案為最佳實踐推導，僅供熟悉題型。</p></div>
+<div class="note">⚠️ <b>記「正確選項的內容」，不是記 A/B/C/D</b>！實際考試會打亂選項。CCAR-P 是情境長題幹選最佳解，答案對齊 Anthropic 官方文件用語。</div>
+
+<div class="selbox" id="filter"></div>
+<div class="bar">
+<button class="btn" id="checkAll">全部對答案</button>
+<button class="btn sec" id="reset">重新開始</button>
+<button class="btn sec" id="wrongOnly">只練錯題</button>
+<span class="prog" id="prog"></span>
+<span class="score hidden" id="score"></span>
+</div>
+<div id="quiz"></div>
+<div class="foot">依 CCAR-P 官方考綱 v1.0（2026-07）整理 · 非 Anthropic 官方教材</div>
+</div>
+<script>
+// correct = 正解在 options 原始陣列中的索引
+const BANK=[
+{d:"D3 Integration",offi:1,q:"一個客服 agent 可讀工單、擬回覆、退款、刪除帳號。客服實際上只需要讀工單與擬回覆。依最小權限原則，哪個改動最能降低風險？",
+ o:["在退款與刪除工具加上 logging，方便事後稽核","直接把退款與刪除工具從 agent 設定中移除","保留所有工具，但退款/刪除前加確認提示","換更大的模型，讓它更可靠地遵守指示"],c:1,
+ e:"最小權限＝移除角色不需要的能力，直接消掉攻擊面。Logging(A)與確認(C)是偵測/補償控制，不是移除多餘權限；模型大小(D)與授權範圍無關。"},
+{d:"D2 Models/Prompt/Context",offi:1,q:"一個應用每次請求都送同一份 8,000-token 的 system prompt + policy，後面接一段簡短且會變動的 user 訊息。延遲與成本都是考量。哪個最佳化最直接同時改善兩者？",
+ o:["把 policy 截斷到前 1,000 token","不管任務適配度，一律換最小的模型","把靜態的 system prompt 與 policy 放在變動內容之前，並啟用 prompt caching","把 policy 移進 few-shot 範例區塊"],c:2,
+ e:"穩定前綴放前面 + prompt caching，讓重複前綴被重用，同時降 time-to-first-token 與每次成本，又不丟必要 context。截斷(A)失去 policy；盲目縮小(B)傷品質；移到 few-shot(D)不會形成可快取前綴。"},
+{d:"D4 Evaluation",offi:1,q:"一個 RAG 系統在做完一次文件 refresh 後，突然開始給出「有自信但錯誤」的答案，模型版本與延遲都沒變。最該先查哪裡？",
+ o:["模型權重被悄悄改了","retrieval/indexing 步驟回傳了不相關或過期的 chunk","temperature 設太低","context window 縮小了"],c:1,
+ e:"文件 refresh 後才出現、模型與延遲不變，指向 retrieval 餵了壞 context，例如 re-index 壞掉或 embedding 不匹配。其他選項不會被「文件 refresh」這件事特別觸發。"},
+{d:"D1 Solution Design",offi:0,q:"要做一個能從「大量、且頻繁更新」的 policy 文件庫回答並附引用的助手。哪個架構樣式最適合？",
+ o:["每月用整個文件庫 fine-tune 一次模型","用 augmented-LLM + RAG 對文件庫做檢索","把整個文件庫塞進單一超長 prompt","用多 agent 互相辯論"],c:1,
+ e:"頻繁更新 + 大量 + 要引用 → 檢索增強(RAG)。Fine-tune(A)慢又貴且難即時；整庫塞 prompt(C)爆 token/成本；多 agent 辯論(D)不解決知識來源問題。"},
+{d:"D1 Solution Design",offi:0,q:"要處理「先研究一個主題、再撰寫報告」的複雜任務。較穩健的設計是？",
+ o:["單一 agent 配一個超長 prompt 一次做完","用 orchestrator(planner)分派給專職 subagent(研究者、撰寫者)","一直隨機重試直到結果好","請使用者自己拆解任務"],c:1,
+ e:"任務可分解 → coordinator/subagent 編排，各司其職、可獨立驗證。單一長 prompt 難維護也易失焦。"},
+{d:"D2 Models/Prompt/Context",offi:0,q:"你要讓下游程式能穩定解析 Claude 的 JSON 輸出。最佳做法？",
+ o:["用禮貌的散文請它給 JSON","提供 JSON schema + few-shot 範例，並在解析失敗時 validate/retry","只靠 regex 事後清理","把 temperature 開到最高"],c:1,
+ e:"結構化輸出：schema + 範例約束格式，validator/retry loop 兜住偶發失敗。這是考綱 D2 明列的做法。"},
+{d:"D2 Models/Prompt/Context",offi:0,q:"任務是「簡單、高流量的分類」，延遲與成本預算很緊。模型選擇？",
+ o:["永遠選最大的模型","選『能通過品質門檻的最小模型』，並用 eval 驗證","永遠選最新出的","隨機輪替模型"],c:1,
+ e:"依 trade-off 選型：先定品質門檻，選能達標的最小/最省模型。注意不是『盲目挑最小』——官方 sample 提醒盲目縮小會傷品質，關鍵是『達標前提下最小』。"},
+{d:"D3 Integration",offi:0,q:"你要讓 Claude 呼叫公司內部工單系統的工具，而且要被多個 agent 與客戶端重用。最佳整合機制？",
+ o:["在每個 agent 裡各自 hardcode HTTP 呼叫","建一個 MCP server，把工具/resource 統一暴露一次","把 API 文件貼進 prompt 讓模型自己想","去 screen-scrape 它的 UI"],c:1,
+ e:"跨多 agent/client 重用的工具整合 → MCP server 統一暴露，避免各處重寫、易維護。這是 D3 連線協議選型的核心。"},
+{d:"D3 Integration",offi:0,q:"RAG 系統把 50 頁的文件當成單一 chunk 檢索，答案模糊又離題。第一個該修的是？",
+ o:["調高 temperature","把文件切成較小、語意連貫的段落再 index","換更大的模型","乾脆拿掉檢索"],c:1,
+ e:"chunking 策略錯了：過大 chunk 稀釋相關性。切成語意連貫的小段再索引，配對資料形狀與查詢型態。"},
+{d:"D4 Evaluation",offi:0,q:"agent 上線前，你怎麼知道它『夠好』？",
+ o:["人工瞄幾筆輸出就好","建 eval dataset 定 metrics(accuracy/latency/cost/safety)並對門檻量測","先上線再看有沒有客訴","相信模型不會錯"],c:1,
+ e:"D4：正式 eval dataset + 量化 metrics + 門檻，才是可證明的『夠好』，而非憑感覺。"},
+{d:"D4 Evaluation",offi:0,q:"兩個 prompt 版本，不確定上線後哪個較好。該用什麼方法？",
+ o:["選比較長的那個","用一個 metric 做 A/B 測試並量測","問模型它比較喜歡哪個","看心情每天換一個"],c:1,
+ e:"A/B 測試 + 明確 metric，用資料決定，而非主觀。"},
+{d:"D5 Governance/合規",offi:0,q:"你的 Claude 應用會處理歐盟居民的個人資料。主要受哪個法規規範？",
+ o:["HIPAA","GDPR","FedRAMP","SOX"],c:1,
+ e:"GDPR = 歐盟一般資料保護規則，管歐盟居民個資。HIPAA=美國醫療、FedRAMP=美國聯邦雲端授權、SOX=財報。這是 Tom 的紅色缺口，要背清楚各自管什麼。"},
+{d:"D5 Governance/合規",offi:0,q:"美國一家醫療機構要用 Claude 處理病患病歷(PHI)。哪個法規適用？",
+ o:["GDPR","HIPAA","PCI-DSS","FedRAMP"],c:1,
+ e:"HIPAA = 美國健康保險可攜與責任法，規範受保護健康資訊(PHI)。PCI-DSS 是信用卡資料。"},
+{d:"D5 Governance/合規",offi:0,q:"美國聯邦機構想採用一個雲端 AI 服務。相關的授權框架是？",
+ o:["HIPAA","GDPR","FedRAMP","CCPA"],c:2,
+ e:"FedRAMP = 美國聯邦政府雲端服務的安全評估與授權框架。CCPA 是加州消費者隱私法。"},
+{d:"D5 Governance/合規",offi:0,q:"agent 產生高風險決策(例如拒絕貸款)。最佳保護措施？",
+ o:["為省成本完全自動化","在決策被執行前加 human-in-the-loop 人工審核","隱藏有用到 AI 這件事","把 temperature 調高"],c:1,
+ e:"高風險決策 → HITL 人工驗證把關(D5)。隱藏 AI 涉及 transparency 違規。"},
+{d:"D6 Stakeholder/Lifecycle",offi:0,q:"客戶說『用 AI 讓我們的客服變聰明』。身為架構師的第一步？",
+ o:["立刻開始寫 agent","做 structured discovery，釐清需求、限制與成功指標","買最大的模型","抄競爭對手的做法"],c:1,
+ e:"D6：先 structured discovery 收集需求/約束/成功 metric，再談方案。跳過 discovery 直接寫最常翻車。"},
+{d:"D7 Dev Productivity",offi:0,q:"你想讓某個 repo 的慣例與 build 指令，自動被團隊的 Claude Code 讀到。放哪裡？",
+ o:["放在每個開發者各自的記憶裡","放一個 CLAUDE.md 在 repo 內","私訊在 Slack","不用放，每次重講一遍"],c:1,
+ e:"CLAUDE.md 放 repo 內，Claude Code 會自動載入團隊共用的慣例與指令(D7)。"}
+];
+
+const quizEl=document.getElementById('quiz'),progEl=document.getElementById('prog'),scoreEl=document.getElementById('score');
+let state=[]; // {qi, order:[原index...], picked:null, done:false}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor((i+1)*pseudo());[a[i],a[j]]=[a[j],a[i]];}return a;}
+let seed=Date.now()%2147483647;function pseudo(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+
+const domains=[...new Set(BANK.map(b=>b.d))];
+let activeDoms=new Set(domains), wrongMode=false;
+function buildFilter(){const f=document.getElementById('filter');f.innerHTML='';
+ const all=document.createElement('label');all.innerHTML='<input type="checkbox" checked id="fAll">全部';
+ all.querySelector('input').onchange=e=>{document.querySelectorAll('#filter .dchk').forEach(c=>c.checked=e.target.checked);syncDoms();build();};
+ f.appendChild(all);
+ domains.forEach(d=>{const l=document.createElement('label');l.innerHTML=`<input type="checkbox" class="dchk" checked value="${d}">${d}`;
+  l.querySelector('input').onchange=()=>{syncDoms();build();};f.appendChild(l);});}
+function syncDoms(){activeDoms=new Set([...document.querySelectorAll('#filter .dchk:checked')].map(c=>c.value));}
+
+function build(){
+ quizEl.innerHTML='';scoreEl.classList.add('hidden');
+ let pool=BANK.map((b,i)=>({b,i})).filter(x=>activeDoms.has(x.b.d));
+ if(wrongMode){const wrongSet=new Set(state.filter(s=>s.done&&s.picked!==null&&BANK[s.qi].o[BANK[s.qi].c]!==shuffledText(s)).map(s=>s.qi));
+  pool=pool.filter(x=>wrongSet.has(x.i));}
+ state=pool.map(x=>({qi:x.i,order:shuffle(x.b.o.map((_,k)=>k)),picked:null,done:false}));
+ state.forEach((s,idx)=>quizEl.appendChild(renderQ(s,idx+1)));
+ updateProg();
+}
+function shuffledText(s){return null;}
+function renderQ(s,num){
+ const b=BANK[s.qi];const card=document.createElement('div');card.className='card';
+ const tag=b.offi?'<span class="chip offi">官方</span>':'<span class="chip mine">自製</span>';
+ card.innerHTML=`<div>${tag}<span class="chip">${b.d}</span></div><div class="q">${num}. ${b.q}</div>`;
+ const labels=['A','B','C','D','E'];
+ s.order.forEach((origIdx,pos)=>{
+  const op=document.createElement('div');op.className='opt';
+  op.innerHTML=`<div class="lb">${labels[pos]}</div><div>${b.o[origIdx]}</div>`;
+  op.onclick=()=>{if(s.done)return;s.picked=origIdx;s.done=true;grade(card,s);updateProg();};
+  card.appendChild(op);
+ });
+ return card;
+}
+function grade(card,s){
+ const b=BANK[s.qi];const opts=card.querySelectorAll('.opt');
+ s.order.forEach((origIdx,pos)=>{const op=opts[pos];op.classList.add('disabled');
+  if(origIdx===b.c)op.classList.add('correct');
+  else if(origIdx===s.picked)op.classList.add('wrong');});
+ const ans=document.createElement('div');ans.className='ans';
+ const ok=s.picked===b.c;
+ ans.innerHTML=`<b>${ok?'✅ 答對':'❌ 答錯'}</b> · 正解：${b.o[b.c]}<br><span style="color:var(--muted)">${b.e}</span>`;
+ card.appendChild(ans);
+}
+function updateProg(){
+ const done=state.filter(s=>s.done).length,total=state.length;
+ const correct=state.filter(s=>s.done&&s.picked===BANK[s.qi].c).length;
+ progEl.textContent=`已答 ${done}/${total} · 答對 ${correct}`;
+ if(done===total&&total>0){scoreEl.classList.remove('hidden');
+  const pct=Math.round(correct/total*100);
+  scoreEl.textContent=`得分 ${correct}/${total}（${pct}%）`;}
+}
+document.getElementById('checkAll').onclick=()=>{state.forEach((s,idx)=>{if(!s.done){s.done=true;s.picked=s.picked??-1;
+  const card=quizEl.children[idx];grade(card,s);}});updateProg();};
+document.getElementById('reset').onclick=()=>{wrongMode=false;seed=(Date.now()%2147483647)||1;build();};
+document.getElementById('wrongOnly').onclick=()=>{
+ const anyWrong=state.some(s=>s.done&&s.picked!==BANK[s.qi].c);
+ if(!anyWrong){alert('目前沒有答錯的題（或還沒作答）。');return;}
+ const wrongQi=new Set(state.filter(s=>s.done&&s.picked!==BANK[s.qi].c).map(s=>s.qi));
+ state=[...wrongQi].map(qi=>({qi,order:shuffle(BANK[qi].o.map((_,k)=>k)),picked:null,done:false}));
+ quizEl.innerHTML='';scoreEl.classList.add('hidden');
+ state.forEach((s,idx)=>quizEl.appendChild(renderQ(s,idx+1)));updateProg();};
+buildFilter();build();
+</script></body></html>
