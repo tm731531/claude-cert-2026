@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>策略對照 · Strategy Catalog</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+ font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;font-size:15.5px}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+.top h1{margin:0 0 5px;font-size:1.25rem}.top p{margin:0;opacity:.94;font-size:.86rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.85em;font-family:"SF Mono",Menlo,Consolas,monospace}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:9px 0;border-bottom:1px solid var(--line);margin-bottom:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tgl{background:var(--accent);color:#fff;border:0;border-radius:20px;padding:8px 16px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit}
+.mode{font-size:.82rem;color:var(--muted)}
+.note{background:var(--ybg);border-left:4px solid var(--y);border-radius:9px;padding:11px 15px;margin:12px 0;font-size:.88rem}
+h2.ch{color:var(--accent);border-left:5px solid var(--accent);padding-left:10px;margin:26px 0 4px;font-size:1.1rem}
+.sit{font-size:.85rem;color:var(--muted);margin:0 0 8px;font-style:italic}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:6px 4px;margin:10px 0;box-shadow:0 1px 5px rgba(0,0,0,.04);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff;font-weight:700;font-size:.84rem}
+td.nm{white-space:nowrap;font-weight:700;color:var(--accent2)}
+@media(prefers-color-scheme:dark){td.nm{color:var(--accent)}}
+td.nm .g{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
+.en{color:var(--bl)}@media(prefers-color-scheme:dark){.en{color:#8ab8e0}}
+.en::before{content:"EN: "}
+body.enonly .zh{display:none}
+body.enonly .en::before{content:""}
+body.zhonly .en{display:none}
+.foot{color:var(--muted);font-size:.8rem;margin-top:34px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>🧭 策略對照 · Strategy Catalog</h1><p>同一個情境有<b>一整排有名字的策略</b>——架構師要知道整排,不只自己慣用那一種。英文名固定(考試用),說明可切中/英。</p></div>
+
+<div class="bar">
+<button class="tgl" id="tgl">🌐 雙語 ⇄ English only</button>
+<span class="mode" id="mode">現在:雙語(中+EN)</span>
+</div>
+
+<div class="note">💡 <b>這頁補兩個盲點</b>:① <b>英文名</b>——考試&術語都英文,名字固定顯示、可切 English-only 模擬考;② <b>策略選單</b>——每個情境列出所有有名字的做法,不是只有你慣用的那個。<b>架構師的價值 = 知道整排角度並選對。</b></div>
+
+<h2 class="ch">A. Agent / Workflow 編排</h2>
+<p class="sit">情境:一個任務單次 call 做不完 · a task that can't be done in one call</p>
+<div class="card"><table>
+<tr><th>Strategy（英文名）</th><th>何時用</th></tr>
+<tr><td class="nm">Prompt Chaining<span class="g">串接</span></td><td><span class="zh">拆成固定序列步驟,各步聚焦一件事;破解 constraint-heavy 長 prompt。</span><span class="en">split into fixed sequential steps, each focused; fixes constraint-heavy prompts.</span></td></tr>
+<tr><td class="nm">Parallelization<span class="g">平行化</span></td><td><span class="zh">一任務拆多個同時跑的子任務,再 aggregate(如逐材料評估)。</span><span class="en">split into simultaneous subtasks, then aggregate (e.g. evaluate each material).</span></td></tr>
+<tr><td class="nm">Routing<span class="g">路由</span></td><td><span class="zh">先分類 input → 導向專門 pipeline(不同主題不同 prompt/tool)。</span><span class="en">classify input first → route to a specialized pipeline.</span></td></tr>
+<tr><td class="nm">Evaluator-Optimizer<span class="g">評估-優化</span></td><td><span class="zh">producer 產出 → evaluator 評 → 不過就迴圈改,直到通過。</span><span class="en">produce → evaluate → loop back to improve until it passes.</span></td></tr>
+<tr><td class="nm">Orchestrator-Workers<span class="g">協調者-工人</span></td><td><span class="zh">coordinator 動態分派給 subagent(hub-and-spoke),自己彙整。</span><span class="en">coordinator dynamically delegates to subagents (hub-and-spoke) and synthesizes.</span></td></tr>
+<tr><td class="nm">Agent (autonomous)<span class="g">自主代理</span></td><td><span class="zh">步驟未知時,給抽象工具讓它自己擬計畫組合。</span><span class="en">when steps are unknown, give abstract tools and let it plan dynamically.</span></td></tr>
+</table></div>
+<div class="note" style="background:var(--blbg);border-color:var(--bl)"><span class="zh">🔑 選型鐵則:<b>步驟已知 → Workflow(可靠、可測);步驟未知才 → Agent</b>。先可靠,再彈性。</span><span class="en">🔑 Rule: <b>known steps → Workflow (reliable, testable); unknown steps → Agent</b>. Reliability first.</span></div>
+
+<h2 class="ch">B. Multi-Agent 協調模式（Anthropic 5 patterns）</h2>
+<p class="sit">情境:單一 agent 不夠,要拆多個 · when one agent isn't enough</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Generator-Verifier<span class="g">生成-驗證</span></td><td><span class="zh">品質關鍵輸出;verifier <b>只找錯、退回</b>不修,且用 clean context。ROI 最高。</span><span class="en">quality-critical; verifier <b>only finds faults & rejects</b> (never fixes), clean context. Highest ROI.</span></td></tr>
+<tr><td class="nm">Orchestrator-Subagent<span class="g">協調-子代理</span></td><td><span class="zh">預設起手式;主 agent 做主線,只把 context-heavy 側查丟 subagent。</span><span class="en">default starting point; main agent works, offloads context-heavy sidequests.</span></td></tr>
+<tr><td class="nm">Agent Teams<span class="g">代理團隊</span></td><td><span class="zh">長期、多步、獨立的工作(大遷移);worker 常駐累積 context。</span><span class="en">long-running, multi-step independent work; workers persist.</span></td></tr>
+<tr><td class="nm">Message Bus<span class="g">訊息匯流排</span></td><td><span class="zh">事件驅動 pipeline(安全告警);難 debug,要紀律 logging。</span><span class="en">event-driven pipelines; hard to debug, needs disciplined logging.</span></td></tr>
+<tr><td class="nm">Shared State<span class="g">共享狀態</span></td><td><span class="zh">研究綜合,任一發現要即時給其他 agent;要明確終止條件。</span><span class="en">research-synthesis where any discovery must be visible to all; needs termination conditions.</span></td></tr>
+</table></div>
+<div class="note"><span class="zh">⚠️ 鐵則:<b>split by context, NOT by problem type</b>。寫功能的 agent 也該寫它的測試(已有 context)。寫入動作單線程,其他 agent 只給 judgment。</span><span class="en">⚠️ Rule: <b>split by context, not by problem type</b>. Writes stay single-threaded; other agents only advise.</span></div>
+
+<h2 class="ch">C. Prompt Engineering 技巧</h2>
+<p class="sit">情境:提升輸出品質/一致性 · improve output quality</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Zero-shot<span class="g">零範例</span></td><td><span class="zh">直接下指令,不給範例。</span><span class="en">instruction only, no examples.</span></td></tr>
+<tr><td class="nm">One-shot / Few-shot (Multi-shot)<span class="g">單/多範例</span></td><td><span class="zh">給 sample input/output 配對引導;corner case、格式一致最有效。</span><span class="en">give sample input/output pairs; best for corner cases & consistent formatting.</span></td></tr>
+<tr><td class="nm">Chain-of-Thought (CoT)<span class="g">思維鏈</span></td><td><span class="zh">要它逐步推理再答;複雜推理題。</span><span class="en">make it reason step-by-step before answering; complex reasoning.</span></td></tr>
+<tr><td class="nm">Being Clear &amp; Direct<span class="g">清楚直接</span></td><td><span class="zh">第一行用 action verb 直指任務(Write/Identify/Generate)。</span><span class="en">first line = action verb stating the exact task.</span></td></tr>
+<tr><td class="nm">Being Specific (Attributes / Steps)<span class="g">具體:屬性/步驟</span></td><td><span class="zh">Type A 列輸出品質;Type B 給推理步驟。幾乎每個 prompt 都該有 A。</span><span class="en">Type A lists output qualities; Type B gives reasoning steps. Almost every prompt needs A.</span></td></tr>
+<tr><td class="nm">XML Structuring<span class="g">XML 標籤</span></td><td><span class="zh">用描述性標籤(<code>&lt;sales_records&gt;</code>)分隔插入的內容區塊。</span><span class="en">wrap injected content in descriptive tags to delineate sections.</span></td></tr>
+<tr><td class="nm">Assistant Prefill<span class="g">預填助手訊息</span></td><td><span class="zh">尾端塞 assistant 開頭,引導它從那接續(拿乾淨輸出)。</span><span class="en">seed an assistant opening so it continues from there (clean output).</span></td></tr>
+<tr><td class="nm">Stop Sequences<span class="g">停止序列</span></td><td><span class="zh">生成到指定字串立即停(該字串不含在輸出)。</span><span class="en">halt generation at a given string (string excluded from output).</span></td></tr>
+</table></div>
+
+<h2 class="ch">D. Structured Output 結構化輸出</h2>
+<p class="sit">情境:要乾淨可解析的 JSON/資料 · need clean parseable data</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Prefill + Stop Sequence<span class="g">預填+停止</span></td><td><span class="zh">prefill <code>```json</code> + stop <code>```</code>。快、簡單,適合輕量擷取。</span><span class="en">prefill <code>```json</code> + stop <code>```</code>. Fast/simple, for lightweight extraction.</span></td></tr>
+<tr><td class="nm">Tool Use + JSON Schema<span class="g">工具+JSON schema</span></td><td><span class="zh">最可靠、消語法錯;但只防語法不防語意。複雜/高可靠用。</span><span class="en">most reliable, eliminates syntax errors (not semantic); for complex/reliable needs.</span></td></tr>
+<tr><td class="nm">tool_choice: auto / any / forced<span class="g">工具選擇</span></td><td><span class="zh">auto=可回文字;any=必呼叫某工具;forced=指定工具先跑。</span><span class="en">auto=may return text; any=must call a tool; forced=call a named tool.</span></td></tr>
+</table></div>
+
+<h2 class="ch">E. Evaluation 評估</h2>
+<p class="sit">情境:證明 prompt/系統夠好 · prove it's good enough</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Code Grader<span class="g">程式評分</span></td><td><span class="zh">程式檢查:語法 valid、長度、關鍵字、可讀性。客觀但淺。</span><span class="en">programmatic checks: syntax valid, length, keywords. Objective but shallow.</span></td></tr>
+<tr><td class="nm">Model Grader<span class="g">模型評分</span></td><td><span class="zh"><b>另一個 AI 模型</b>評分;要它給 strengths/weaknesses/reasoning+score。最有彈性。</span><span class="en"><b>another AI model</b> grades; ask for strengths/weaknesses/reasoning+score. Most flexible.</span></td></tr>
+<tr><td class="nm">Human Grader<span class="g">人工評分</span></td><td><span class="zh">人審;最彈性但耗時。</span><span class="en">a person reviews; most flexible but slow.</span></td></tr>
+<tr><td class="nm">A/B Testing<span class="g">A/B 測試</span></td><td><span class="zh">兩版 prompt 用一個 metric 比,用資料決定。</span><span class="en">compare two prompt versions on one metric; let data decide.</span></td></tr>
+</table></div>
+
+<h2 class="ch">F. RAG 檢索策略</h2>
+<p class="sit">情境:大文件查特定資訊 · query large docs</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Size-based Chunking<span class="g">等長切塊</span></td><td><span class="zh">等長切;最常用,配 <b>overlap</b> 保上下文。</span><span class="en">equal-length chunks; most common, add <b>overlap</b> for context.</span></td></tr>
+<tr><td class="nm">Structure-based Chunking<span class="g">結構切塊</span></td><td><span class="zh">依標題/段落切;需結構化文件(markdown/HTML)。</span><span class="en">split by headers/sections; needs structured docs.</span></td></tr>
+<tr><td class="nm">Semantic Chunking<span class="g">語意切塊</span></td><td><span class="zh">NLP 依語意分組;最進階、最複雜。</span><span class="en">NLP groups by meaning; most advanced.</span></td></tr>
+<tr><td class="nm">Semantic Search (embeddings)<span class="g">語意搜尋</span></td><td><span class="zh">向量 cosine 相似;懂語意但漏精確字。</span><span class="en">vector cosine similarity; understands meaning, misses exact terms.</span></td></tr>
+<tr><td class="nm">BM25 (Lexical)<span class="g">關鍵字搜尋</span></td><td><span class="zh">精確字匹配;稀有字權重高。補語意搜尋。</span><span class="en">exact term matching; rare terms weighted high. Complements semantic.</span></td></tr>
+<tr><td class="nm">Hybrid + RRF<span class="g">混合+RRF</span></td><td><span class="zh">語意+BM25 並行,用 Reciprocal Rank Fusion 合併。</span><span class="en">semantic + BM25 in parallel, merged via Reciprocal Rank Fusion.</span></td></tr>
+<tr><td class="nm">Reranking<span class="g">重排序</span></td><td><span class="zh">檢索後用 LLM 依相關性重排;增準度、加延遲。</span><span class="en">LLM reorders results by relevance after retrieval; more accurate, more latency.</span></td></tr>
+<tr><td class="nm">Contextual Retrieval<span class="g">情境化檢索</span></td><td><span class="zh">embed 前先給每個 chunk 加原文情境,防失去上下文。</span><span class="en">add situating context to each chunk before embedding.</span></td></tr>
+</table></div>
+
+<h2 class="ch">G. Context 管理 / 可靠性</h2>
+<p class="sit">情境:省 context、控成本、防漂移 · save context, control cost</p>
+<div class="card"><table>
+<tr><th>Strategy</th><th>何時用</th></tr>
+<tr><td class="nm">Prompt Caching<span class="g">提示快取</span></td><td><span class="zh">重複的 system/tool 前綴設 cache breakpoint(≥1024 token,1hr)。</span><span class="en">cache breakpoints on repeated system/tool prefixes (≥1024 tokens, 1hr).</span></td></tr>
+<tr><td class="nm">Progressive Disclosure<span class="g">漸進揭露</span></td><td><span class="zh">主檔<500 行,細節拆附屬檔,需要才載(skills)。</span><span class="en">keep main file <500 lines; load detail files only when needed.</span></td></tr>
+<tr><td class="nm">Subagent Isolation<span class="g">子代理隔離</span></td><td><span class="zh">冗長探索丟 subagent、只回摘要,保主 context 乾淨。</span><span class="en">offload verbose work to a subagent, return only a summary.</span></td></tr>
+<tr><td class="nm">Extended Thinking<span class="g">延伸思考</span></td><td><span class="zh">複雜題開推理預算(≥1024,max_tokens 要更大);prompt 調不動才用。</span><span class="en">reasoning budget for hard tasks (≥1024, max_tokens larger); use after prompt tuning fails.</span></td></tr>
+</table></div>
+
+<h2 class="ch">H. Claude Code 客製化（選對工具）</h2>
+<p class="sit">情境:要客製 Claude Code 行為 · customize Claude Code</p>
+<div class="card"><table>
+<tr><th>Feature</th><th>何時用</th></tr>
+<tr><td class="nm">CLAUDE.md</td><td><span class="zh">always-on:每個對話都載。專案標準/約束/風格。</span><span class="en">always-on, loads every conversation. Project standards/constraints.</span></td></tr>
+<tr><td class="nm">Skills</td><td><span class="zh">request-driven:匹配才自動載。任務專屬知識、省 context。</span><span class="en">request-driven, auto-loads on match. Task-specific expertise.</span></td></tr>
+<tr><td class="nm">Subagents</td><td><span class="zh">隔離 context 委派;要不同工具權限、要隔離。</span><span class="en">isolated-context delegation; different tool access, isolation.</span></td></tr>
+<tr><td class="nm">Hooks</td><td><span class="zh">event-driven:存檔/工具呼叫時 fire。自動 side effect/驗證。</span><span class="en">event-driven, fires on save/tool call. Automated side effects.</span></td></tr>
+<tr><td class="nm">MCP Servers</td><td><span class="zh">外部工具/整合(不同類別)。</span><span class="en">external tools/integrations (a different category).</span></td></tr>
+</table></div>
+
+<div class="foot"><span class="zh">策略對照 · 中英雙語 · 依 CCAR-F / Building API 課程整理 · 非官方教材</span><span class="en">Strategy Catalog · bilingual · from CCAR-F / Building API courses · not official</span></div>
+</div>
+<script>
+var b=document.body,btn=document.getElementById('tgl'),m=document.getElementById('mode');
+btn.onclick=function(){
+  b.classList.toggle('enonly');
+  m.textContent = b.classList.contains('enonly') ? '現在:English only(考試模式)' : '現在:雙語(中+EN)';
+};
+</script></body></html>
