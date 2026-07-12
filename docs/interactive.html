@@ -72,7 +72,7 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 <div class="pane" id="pane-strategy">
 <div class="key">🎯 回答問題 → 得到<b>該用哪個命名策略</b>。練「情境 → 判準 → 選擇」的路徑。</div>
 <div class="stage"><div id="sp"></div>
-<div class="ctrl"><button class="btn sec" id="sp-reset">↺ 重來</button></div></div>
+<div class="ctrl"><button class="btn sec" id="sp-back">◀ 上一步</button><button class="btn sec" id="sp-reset">↺ 重來</button></div></div>
 </div>
 
 <div class="foot">互動說明 · 依 CCAR-F / Building API 課程手冊 · 純前端 · 非官方教材</div>
@@ -274,16 +274,20 @@ const TREE={
  r_hook:{nm:'Hook',why:'event-driven,存檔/工具呼叫時 fire。自動 side effect/驗證(每次存檔跑 linter)。'},
  r_mcp:{nm:'MCP Server',why:'外部工具/整合;把 tool 定義與執行搬到 server(不同類別)。'}
 };
-let spPath=[];
-function sp(node){
- const el=document.getElementById('sp');const n=TREE[node];
+let spNodes=['start'], spPath=[];
+function spRender(){
+ const node=spNodes[spNodes.length-1];const el=document.getElementById('sp');const n=TREE[node];
  const crumb=spPath.length?'<div class="path">'+spPath.join(' → ')+'</div>':'';
- if(n.nm){el.innerHTML=crumb+'<div class="result"><div class="nm">✅ '+n.nm+'</div>'+n.why+'</div>';return;}
- let h=crumb+'<div class="q">'+n.q+'</div>';
- n.opts.forEach((o,i)=>{h+='<button class="opt" data-go="'+o.go+'" data-t="'+o.t+'">'+o.t+'</button>';});
- el.innerHTML=h;
- el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{spPath.push(b.dataset.t);sp(b.dataset.go);});
+ if(n.nm){el.innerHTML=crumb+'<div class="result"><div class="nm">✅ '+n.nm+'</div>'+n.why+'</div>';}
+ else{
+  let h=crumb+'<div class="q">'+n.q+'</div>';
+  n.opts.forEach(o=>{h+='<button class="opt" data-go="'+o.go+'" data-t="'+o.t+'">'+o.t+'</button>';});
+  el.innerHTML=h;
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{spNodes.push(b.dataset.go);spPath.push(b.dataset.t);spRender();});
+ }
+ document.getElementById('sp-back').disabled=spNodes.length<=1;
 }
-document.getElementById('sp-reset').onclick=()=>{spPath=[];sp('start');};
-sp('start');
+document.getElementById('sp-back').onclick=()=>{if(spNodes.length>1){spNodes.pop();spPath.pop();spRender();}};
+document.getElementById('sp-reset').onclick=()=>{spNodes=['start'];spPath=[];spRender();};
+spRender();
 </script></body></html>
