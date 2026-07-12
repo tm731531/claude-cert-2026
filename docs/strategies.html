@@ -34,6 +34,12 @@ body.enonly .zh{display:none}
 body.enonly .en::before{content:""}
 body.zhonly .en{display:none}
 .foot{color:var(--muted);font-size:.8rem;margin-top:34px;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+.dec{background:var(--okbg);border-left:4px solid var(--ok);border-radius:9px;padding:11px 14px;margin:2px 0 16px;font-size:.88rem}
+.dec b.k{color:var(--ok)}
+.dec .ex{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.dec .ex .row{margin:3px 0}
+.dec .ex .row b{color:var(--accent2)}
+@media(prefers-color-scheme:dark){.dec .ex .row b{color:var(--accent)}}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
 <div class="top"><h1>🧭 策略對照 · Strategy Catalog</h1><p>同一個情境有<b>一整排有名字的策略</b>——架構師要知道整排,不只自己慣用那一種。英文名固定(考試用),說明可切中/英。</p></div>
@@ -58,6 +64,16 @@ body.zhonly .en{display:none}
 </table></div>
 <div class="note" style="background:var(--blbg);border-color:var(--bl)"><span class="zh">🔑 選型鐵則:<b>步驟已知 → Workflow(可靠、可測);步驟未知才 → Agent</b>。先可靠,再彈性。</span><span class="en">🔑 Rule: <b>known steps → Workflow (reliable, testable); unknown steps → Agent</b>. Reliability first.</span></div>
 
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問一句:<b>步驟明確嗎?</b> 已知→Workflow(可靠可測)、未知→Agent。Workflow 內部再看:逐面向→Chaining、可平行→Parallelization、分類分流→Routing、要檢查+改進迴圈→Evaluator-Optimizer。</span><span class="en">Ask: <b>are the steps clear?</b> known→Workflow (reliable, testable), unknown→Agent. Within workflows: multi-aspect→Chaining, parallel→Parallelization, by-category→Routing, check+improve loop→Evaluator-Optimizer.</span>
+<div class="ex">
+<div class="row"><span class="zh">「修車估價,步驟每次固定」→</span><span class="en">"repair-cost estimate, same steps every time" →</span> <b>Workflow</b></div>
+<div class="row"><span class="zh">「研究陌生主題,不確定要幾步」→</span><span class="en">"research an unfamiliar topic, unsure how many steps" →</span> <b>Agent</b></div>
+<div class="row"><span class="zh">「寫報告 → 檢查夠不夠好 → 不夠就改」→</span><span class="en">"write a report → check → improve if needed" →</span> <b>Evaluator-Optimizer</b></div>
+<div class="row"><span class="zh">「程式題要教學風、運動題要娛樂風」→</span><span class="en">"educational for coding topics, entertainment for sports" →</span> <b>Routing</b></div>
+<div class="row"><span class="zh">「評估金屬/塑膠/陶瓷 4 種材料各自標準」→</span><span class="en">"evaluate metal/plastic/ceramic each on its own criteria" →</span> <b>Parallelization</b></div>
+</div></div>
+
 <h2 class="ch">B. Multi-Agent 協調模式（Anthropic 5 patterns）</h2>
 <p class="sit">情境:單一 agent 不夠,要拆多個 · when one agent isn't enough</p>
 <div class="card"><table>
@@ -69,6 +85,14 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Shared State<span class="g">共享狀態</span></td><td><span class="zh">研究綜合,任一發現要即時給其他 agent;要明確終止條件。</span><span class="en">research-synthesis where any discovery must be visible to all; needs termination conditions.</span></td></tr>
 </table></div>
 <div class="note"><span class="zh">⚠️ 鐵則:<b>split by context, NOT by problem type</b>。寫功能的 agent 也該寫它的測試(已有 context)。寫入動作單線程,其他 agent 只給 judgment。</span><span class="en">⚠️ Rule: <b>split by context, not by problem type</b>. Writes stay single-threaded; other agents only advise.</span></div>
+
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>讀多還是寫多?</b> 讀→可平行(subagent);寫→單線程,其他只給 judgment。<b>品質關鍵</b>→加 Generator-Verifier(verifier 用 clean context,只找錯);<b>長期多步獨立</b>→Agent Teams。</span><span class="en">Ask: <b>read-heavy or write-heavy?</b> reads parallelize (subagents); writes stay single-threaded. <b>Quality-critical</b>→add Generator-Verifier (clean-context verifier); <b>long independent work</b>→Agent Teams.</span>
+<div class="ex">
+<div class="row"><span class="zh">「code review,品質很關鍵」→</span><span class="en">"code review, quality-critical" →</span> <b>Generator-Verifier</b></div>
+<div class="row"><span class="zh">「大 codebase 只想找一個事實」→</span><span class="en">"find one fact in a huge codebase" →</span> <b>Orchestrator-Subagent</b></div>
+<div class="row"><span class="zh">「大型遷移,多個獨立檔案」→</span><span class="en">"large migration, many independent files" →</span> <b>Agent Teams</b></div>
+</div></div>
 
 <h2 class="ch">C. Prompt Engineering 技巧</h2>
 <p class="sit">情境:提升輸出品質/一致性 · improve output quality</p>
@@ -84,6 +108,14 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Stop Sequences<span class="g">停止序列</span></td><td><span class="zh">生成到指定字串立即停(該字串不含在輸出)。</span><span class="en">halt generation at a given string (string excluded from output).</span></td></tr>
 </table></div>
 
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>一般指令沒效,缺的是什麼?</b> 格式不一致→Few-shot(給範例);要它想更深/多角度→Type-B steps 或 CoT;內容混雜難分→XML tags;要 raw 輸出→Prefill+Stop。</span><span class="en">Ask: <b>what's missing when plain instructions fail?</b> inconsistent format→Few-shot; needs deeper reasoning→Type-B steps/CoT; mixed content→XML tags; raw output→Prefill+Stop.</span>
+<div class="ex">
+<div class="row"><span class="zh">「分類任務老是抓不到諷刺」→</span><span class="en">"classifier keeps missing sarcasm" →</span> <b>Few-shot (labeled examples)</b></div>
+<div class="row"><span class="zh">「要它考慮多個角度再下結論」→</span><span class="en">"want it to consider multiple angles first" →</span> <b>Type-B steps / CoT</b></div>
+<div class="row"><span class="zh">「prompt 裡混了程式碼和文件」→</span><span class="en">"prompt mixes code and docs" →</span> <b>XML tags</b></div>
+</div></div>
+
 <h2 class="ch">D. Structured Output 結構化輸出</h2>
 <p class="sit">情境:要乾淨可解析的 JSON/資料 · need clean parseable data</p>
 <div class="card"><table>
@@ -92,6 +124,13 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Tool Use + JSON Schema<span class="g">工具+JSON schema</span></td><td><span class="zh">最可靠、消語法錯;但只防語法不防語意。複雜/高可靠用。</span><span class="en">most reliable, eliminates syntax errors (not semantic); for complex/reliable needs.</span></td></tr>
 <tr><td class="nm">tool_choice: auto / any / forced<span class="g">工具選擇</span></td><td><span class="zh">auto=可回文字;any=必呼叫某工具;forced=指定工具先跑。</span><span class="en">auto=may return text; any=must call a tool; forced=call a named tool.</span></td></tr>
 </table></div>
+
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>要簡單快、還是可靠複雜?</b> 輕量擷取→Prefill+Stop;高可靠/複雜 schema→Tool_use+JSON schema;<b>要保證它一定呼叫工具</b>→<code>tool_choice: any</code> 或 forced。</span><span class="en">Ask: <b>simple-fast or reliable-complex?</b> lightweight→Prefill+Stop; reliable/complex schema→Tool_use+JSON schema; <b>guarantee a tool call</b>→<code>tool_choice: any</code>/forced.</span>
+<div class="ex">
+<div class="row"><span class="zh">「web app 要用戶直接複製乾淨 JSON」→</span><span class="en">"web app, users copy clean JSON" →</span> <b>Prefill + Stop</b></div>
+<div class="row"><span class="zh">「多個 schema、複雜擷取、要可靠」→</span><span class="en">"multiple schemas, complex, must be reliable" →</span> <b>Tool_use + forced tool_choice</b></div>
+</div></div>
 
 <h2 class="ch">E. Evaluation 評估</h2>
 <p class="sit">情境:證明 prompt/系統夠好 · prove it's good enough</p>
@@ -102,6 +141,13 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Human Grader<span class="g">人工評分</span></td><td><span class="zh">人審;最彈性但耗時。</span><span class="en">a person reviews; most flexible but slow.</span></td></tr>
 <tr><td class="nm">A/B Testing<span class="g">A/B 測試</span></td><td><span class="zh">兩版 prompt 用一個 metric 比,用資料決定。</span><span class="en">compare two prompt versions on one metric; let data decide.</span></td></tr>
 </table></div>
+
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>能用程式客觀驗證嗎?</b> 語法/格式可驗(JSON/code/regex valid)→Code grader;要判「品質好不好、有沒有遵循指令」→Model grader(要它給 reasoning+score);主觀細緻→Human。最終常 <code>(model+code)/2</code>。</span><span class="en">Ask: <b>can code verify it objectively?</b> syntax/format→Code grader; quality/instruction-following→Model grader (ask for reasoning+score); nuanced/subjective→Human. Often final = <code>(model+code)/2</code>.</span>
+<div class="ex">
+<div class="row"><span class="zh">「驗證輸出是不是 valid JSON」→</span><span class="en">"check output is valid JSON" →</span> <b>Code grader</b></div>
+<div class="row"><span class="zh">「評估這個回答品質好不好」→</span><span class="en">"judge whether an answer is good" →</span> <b>Model grader</b></div>
+</div></div>
 
 <h2 class="ch">F. RAG 檢索策略</h2>
 <p class="sit">情境:大文件查特定資訊 · query large docs</p>
@@ -117,6 +163,14 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Contextual Retrieval<span class="g">情境化檢索</span></td><td><span class="zh">embed 前先給每個 chunk 加原文情境,防失去上下文。</span><span class="en">add situating context to each chunk before embedding.</span></td></tr>
 </table></div>
 
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>檢索出問題,病灶在哪?</b> 文件有結構(md/html)→Structure chunking;漏精確字→加 BM25(→Hybrid+RRF);排序不夠準→Reranking;chunk 抽離失去上下文→Contextual retrieval。</span><span class="en">Ask: <b>where's the retrieval failing?</b> structured docs→Structure chunking; missing exact terms→add BM25 (→Hybrid+RRF); ranking off→Reranking; chunks lose context→Contextual retrieval.</span>
+<div class="ex">
+<div class="row"><span class="zh">「markdown 文件」→</span><span class="en">"markdown docs" →</span> <b>Structure-based chunking</b></div>
+<div class="row"><span class="zh">「查『ENG team』卻撈到 cybersecurity」→</span><span class="en">"query 'ENG team' returns cybersecurity" →</span> <b>Reranking</b></div>
+<div class="row"><span class="zh">「既要語意懂,又要精確關鍵字」→</span><span class="en">"need both meaning and exact keywords" →</span> <b>Hybrid + RRF</b></div>
+</div></div>
+
 <h2 class="ch">G. Context 管理 / 可靠性</h2>
 <p class="sit">情境:省 context、控成本、防漂移 · save context, control cost</p>
 <div class="card"><table>
@@ -126,6 +180,13 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Subagent Isolation<span class="g">子代理隔離</span></td><td><span class="zh">冗長探索丟 subagent、只回摘要,保主 context 乾淨。</span><span class="en">offload verbose work to a subagent, return only a summary.</span></td></tr>
 <tr><td class="nm">Extended Thinking<span class="g">延伸思考</span></td><td><span class="zh">複雜題開推理預算(≥1024,max_tokens 要更大);prompt 調不動才用。</span><span class="en">reasoning budget for hard tasks (≥1024, max_tokens larger); use after prompt tuning fails.</span></td></tr>
 </table></div>
+
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>context 的痛點是什麼?</b> 重複前綴→Prompt caching;檔太大塞 context→Progressive disclosure;冗長探索污染主線→Subagent isolation;複雜推理不夠準(且 prompt 調不動)→Extended thinking。</span><span class="en">Ask: <b>what's the context pain?</b> repeated prefix→Prompt caching; file too big→Progressive disclosure; verbose work pollutes main→Subagent isolation; hard reasoning (prompt tuning failed)→Extended thinking.</span>
+<div class="ex">
+<div class="row"><span class="zh">「每次都送同一份 8000-token system prompt」→</span><span class="en">"same 8000-token system prompt every request" →</span> <b>Prompt caching</b></div>
+<div class="row"><span class="zh">「多階段任務怕 context 爆掉」→</span><span class="en">"multi-phase task risks context exhaustion" →</span> <b>Subagent isolation</b></div>
+</div></div>
 
 <h2 class="ch">H. Claude Code 客製化（選對工具）</h2>
 <p class="sit">情境:要客製 Claude Code 行為 · customize Claude Code</p>
@@ -137,6 +198,14 @@ body.zhonly .en{display:none}
 <tr><td class="nm">Hooks</td><td><span class="zh">event-driven:存檔/工具呼叫時 fire。自動 side effect/驗證。</span><span class="en">event-driven, fires on save/tool call. Automated side effects.</span></td></tr>
 <tr><td class="nm">MCP Servers</td><td><span class="zh">外部工具/整合(不同類別)。</span><span class="en">external tools/integrations (a different category).</span></td></tr>
 </table></div>
+
+<div class="dec"><b class="k">🎯 判準 · Decision key</b><br>
+<span class="zh">問:<b>何時該載入/觸發?</b> 每個對話都要→CLAUDE.md;只在相關 request 才要→Skill;要隔離委派+不同工具權限→Subagent;要在事件(存檔/工具呼叫)自動跑→Hook;要外部工具/整合→MCP。</span><span class="en">Ask: <b>when should it load/fire?</b> every conversation→CLAUDE.md; only on relevant request→Skill; isolated delegation→Subagent; on events→Hook; external tools→MCP.</span>
+<div class="ex">
+<div class="row"><span class="zh">「永遠用 TypeScript strict mode」→</span><span class="en">"always use TypeScript strict mode" →</span> <b>CLAUDE.md</b></div>
+<div class="row"><span class="zh">「PR review checklist,只有 review 時才要」→</span><span class="en">"PR review checklist, only when reviewing" →</span> <b>Skill</b></div>
+<div class="row"><span class="zh">「每次存檔自動跑 linter」→</span><span class="en">"run a linter on every file save" →</span> <b>Hook</b></div>
+</div></div>
 
 <div class="foot"><span class="zh">策略對照 · 中英雙語 · 依 CCAR-F / Building API 課程整理 · 非官方教材</span><span class="en">Strategy Catalog · bilingual · from CCAR-F / Building API courses · not official</span></div>
 </div>
