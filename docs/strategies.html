@@ -42,6 +42,12 @@ body.zhonly .en{display:none}
 @media(prefers-color-scheme:dark){.dec .ex .row b{color:var(--accent)}}
 .codelbl{font-size:.78rem;color:var(--muted);margin:0 0 4px;font-weight:700}
 .code{background:#1e1e1e;color:#e6e6e6;border-radius:8px;padding:11px 13px;overflow-x:auto;font-size:12.5px;line-height:1.5;font-family:Consolas,Menlo,monospace;margin:0 0 16px;white-space:pre}
+.diff{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--bl);border-radius:9px;padding:11px 14px;margin:2px 0 16px;font-size:.88rem}
+.diff b.k{color:var(--bl)}@media(prefers-color-scheme:dark){.diff b.k{color:#8ab8e0}}
+.diff .p{margin:7px 0;padding-left:2px}
+.diff .p .vs{font-weight:700;color:var(--accent2)}
+@media(prefers-color-scheme:dark){.diff .p .vs{color:var(--accent)}}
+.diff .sig{color:var(--muted);font-size:.85rem}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
 <div class="top"><h1>🧭 策略對照 · Strategy Catalog</h1><p>同一個情境有<b>一整排有名字的策略</b>——架構師要知道整排,不只自己慣用那一種。英文名固定(考試用),說明可切中/英。</p></div>
@@ -87,6 +93,12 @@ body.zhonly .en{display:none}
         add_user_message(messages, tool_results) # 結果當 user 訊息送回
     return messages</pre>
 
+<div class="diff"><b class="k">🔍 兄弟差異 · How to tell them apart</b>
+<div class="p"><span class="vs">Chaining vs Evaluator-Optimizer</span> — <span class="zh">都是序列,但 Chaining <b>單向不回頭</b>;E-O 有「評估→不過就退回重做」<b>迴圈</b>。</span><span class="en">both sequential, but Chaining is one-way; E-O loops back to redo.</span> <span class="sig">▸ 信號:有沒有「品質檢查 + 可能重來」。</span></div>
+<div class="p"><span class="vs">Parallelization vs Routing</span> — <span class="zh">都拆,但 Parallelization <b>全部同時做再合</b>;Routing <b>只選一條路走</b>。</span><span class="en">Parallelization does all at once then aggregates; Routing picks one path.</span> <span class="sig">▸ 信號:全部都要做 vs 依類型選一條。</span></div>
+<div class="p"><span class="vs">Workflow vs Agent</span> — <span class="zh">你<b>能不能事先把步驟畫出來</b>。畫得出→Workflow;畫不出→Agent。</span><span class="en">can you draw the steps in advance? yes→Workflow, no→Agent.</span> <span class="sig">▸ 信號:流程可預畫 vs 未知。</span></div>
+</div>
+
 <h2 class="ch">B. Multi-Agent 協調模式（Anthropic 5 patterns）</h2>
 <p class="sit">情境:單一 agent 不夠,要拆多個 · when one agent isn't enough</p>
 <div class="card"><table>
@@ -106,6 +118,21 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「大 codebase 只想找一個事實」→</span><span class="en">"find one fact in a huge codebase" →</span> <b>Orchestrator-Subagent</b></div>
 <div class="row"><span class="zh">「大型遷移,多個獨立檔案」→</span><span class="en">"large migration, many independent files" →</span> <b>Agent Teams</b></div>
 </div></div>
+
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Generator-Verifier vs Orchestrator-Subagent</span> — <span class="zh">G-V 是<b>對抗</b>(verifier 找錯、退回,用 clean context);O-S 是<b>委派</b>(subagent 做髒活、回摘要)。</span><span class="en">G-V is adversarial (verifier rejects); O-S is delegation (subagent offloads).</span> <span class="sig">▸ 信號:要品質把關 vs 要 context 卸載。</span></div>
+<div class="p"><span class="vs">Orchestrator-Subagent vs Agent Teams</span> — <span class="zh">subagent <b>用完即拋</b>(ephemeral,一任務);Agent Teams <b>常駐累積 context</b>。</span><span class="en">subagents are ephemeral; Agent Teams persist.</span> <span class="sig">▸ 信號:一次性側查 vs 長期多步。</span></div>
+</div>
+
+<div class="codelbl">📎 sample code — MCP server：<code>@mcp.tool</code> 從函式簽章自動生 schema（免手寫 JSON）</div>
+<pre class="code">from pydantic import Field
+
+@mcp.tool(name="read_doc", description="Read a document by id")
+def read_doc(doc_id: str = Field(description="the document id")):
+    if doc_id not in docs:
+        raise ValueError(f"doc {doc_id} not found")  # error 給 Claude 看 → 它可重試
+    return docs[doc_id]
+# Resources = @mcp.resource(uri, mime_type) · Prompts = @mcp.prompt(...)</pre>
 
 <h2 class="ch">C. Prompt Engineering 技巧</h2>
 <p class="sit">情境:提升輸出品質/一致性 · improve output quality</p>
@@ -128,6 +155,23 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「要它考慮多個角度再下結論」→</span><span class="en">"want it to consider multiple angles first" →</span> <b>Type-B steps / CoT</b></div>
 <div class="row"><span class="zh">「prompt 裡混了程式碼和文件」→</span><span class="en">"prompt mixes code and docs" →</span> <b>XML tags</b></div>
 </div></div>
+
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Few-shot vs XML tags</span> — <span class="zh">few-shot 教「<b>輸出該長怎樣</b>」;XML 是「<b>分隔輸入</b>內容」。</span><span class="en">few-shot teaches output shape; XML delimits input.</span> <span class="sig">▸ 信號:問題在輸出格式 vs 輸入混雜。</span></div>
+<div class="p"><span class="vs">Type A (attributes) vs Type B (steps)</span> — <span class="zh">A 控「<b>輸出要有什麼</b>」;B 控「<b>怎麼想出來</b>」。</span><span class="en">A controls the output; B controls the reasoning path.</span> <span class="sig">▸ 信號:管結果 vs 管過程。</span></div>
+<div class="p"><span class="vs">Clear&amp;Direct vs Being Specific</span> — <span class="zh">C&amp;D=第一行<b>講清任務</b>;Specific=<b>補品質條件/步驟</b>。</span><span class="en">C&amp;D states the task; Specific adds quality criteria/steps.</span> <span class="sig">▸ 信號:任務不清 vs 品質不穩。</span></div>
+</div>
+
+<div class="codelbl">📎 sample code — few-shot：用 XML 包「範例輸入 → 理想輸出」，放在指令之後</div>
+<pre class="code">prompt = """Classify sentiment. Be especially careful with sarcasm.
+
+&lt;example&gt;
+  &lt;input&gt;Oh great, another Monday.&lt;/input&gt;
+  &lt;output&gt;negative (sarcasm)&lt;/output&gt;
+&lt;/example&gt;
+
+&lt;input&gt;{user_text}&lt;/input&gt;"""
+# 教「輸出長怎樣」+ 示範 corner case（諷刺）→ 比「be careful」有效</pre>
 
 <h2 class="ch">D. Structured Output 結構化輸出</h2>
 <p class="sit">情境:要乾淨可解析的 JSON/資料 · need clean parseable data</p>
@@ -156,6 +200,11 @@ chat(messages, tools=[extract_schema],
      tool_choice={"type": "tool", "name": "extract_data"})
 #   "auto"=可回文字 · "any"=必呼叫某工具 · forced=指定工具先跑</pre>
 
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Prefill+Stop vs Tool_use+Schema</span> — <span class="zh">前者<b>盡力/簡單/快</b>;後者<b>保證 schema/複雜/可靠</b>(但只防語法不防語意)。</span><span class="en">prefill=best-effort/fast; tool_use=guaranteed schema/reliable.</span> <span class="sig">▸ 信號:輕量 copy vs 生產可靠。</span></div>
+<div class="p"><span class="vs">tool_choice any vs forced</span> — <span class="zh">any=<b>必呼叫工具但模型自選</b>哪個;forced=<b>你指定哪個</b>先跑。</span><span class="en">any=must call some tool; forced=call this specific tool.</span> <span class="sig">▸ 信號:只要「一定用工具」vs「一定用某工具」。</span></div>
+</div>
+
 <h2 class="ch">E. Evaluation 評估</h2>
 <p class="sit">情境:證明 prompt/系統夠好 · prove it's good enough</p>
 <div class="card"><table>
@@ -172,6 +221,19 @@ chat(messages, tools=[extract_schema],
 <div class="row"><span class="zh">「驗證輸出是不是 valid JSON」→</span><span class="en">"check output is valid JSON" →</span> <b>Code grader</b></div>
 <div class="row"><span class="zh">「評估這個回答品質好不好」→</span><span class="en">"judge whether an answer is good" →</span> <b>Model grader</b></div>
 </div></div>
+
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Code grader vs Model grader</span> — <span class="zh">Code 驗<b>客觀事實</b>(語法/格式 valid);Model 判<b>主觀品質</b>(好不好/遵不遵循指令)。</span><span class="en">Code checks objective facts; Model judges subjective quality.</span> <span class="sig">▸ 信號:能不能寫程式判斷。</span></div>
+<div class="p"><span class="vs">Model grader vs Human</span> — <span class="zh">Model <b>可規模化但可能不穩</b>;Human <b>最準但慢</b>。</span><span class="en">Model scales but is inconsistent; Human is accurate but slow.</span> <span class="sig">▸ 信號:要量 vs 要精。</span></div>
+</div>
+
+<div class="codelbl">📎 sample code — model grader：要 reasoning 不只 score（避免給中庸分）</div>
+<pre class="code">add_user_message(messages, f"Grade this answer 1-10.\n&lt;answer&gt;{output}&lt;/answer&gt;")
+add_assistant_message(messages, "```json")          # prefill 逼結構化
+text = chat(messages, stop_sequences=["```"])
+result = json.loads(text)
+# → {"strengths":[...], "weaknesses":[...], "reasoning":"...", "score":8}
+# 要 strengths/weaknesses/reasoning，不然模型傾向都給 5-6 中庸分</pre>
 
 <h2 class="ch">F. RAG 檢索策略</h2>
 <p class="sit">情境:大文件查特定資訊 · query large docs</p>
@@ -205,6 +267,12 @@ chat(messages, tools=[extract_schema],
         start = end - chunk_overlap if end &lt; len(text) else len(text)
     return chunks</pre>
 
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Semantic vs BM25</span> — <span class="zh">Semantic <b>懂意思但漏精確字</b>;BM25 <b>抓精確字但不懂意思</b>。</span><span class="en">Semantic understands meaning but misses exact terms; BM25 the reverse.</span> <span class="sig">▸ 信號:query 是概念 vs 專有名詞/ID。</span></div>
+<div class="p"><span class="vs">Reranking vs Contextual Retrieval</span> — <span class="zh">Reranking <b>事後重排</b>(檢索完再排);Contextual <b>事前加情境</b>(index 前給 chunk 加上下文)。</span><span class="en">Reranking reorders after retrieval; Contextual adds context before indexing.</span> <span class="sig">▸ 信號:排序不準 vs chunk 失去上下文。</span></div>
+<div class="p"><span class="vs">三種 Chunking</span> — <span class="zh">有結構保證(md/html)→structure;要語意且吃得下複雜→semantic;<b>都不確定→size+overlap</b>(最穩 fallback)。</span><span class="en">structured docs→structure; need semantics→semantic; unsure→size+overlap.</span></div>
+</div>
+
 <h2 class="ch">G. Context 管理 / 可靠性</h2>
 <p class="sit">情境:省 context、控成本、防漂移 · save context, control cost</p>
 <div class="card"><table>
@@ -230,6 +298,21 @@ chat(messages, tools=[extract_schema],
     # ⚠️ 規則：thinking_budget 最少 1024；max_tokens 必須 &gt; thinking_budget
     return client.messages.create(**params)</pre>
 
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Caching vs Progressive Disclosure</span> — <span class="zh">Caching 省「<b>重複前綴重算</b>」;Progressive 省「<b>一次載入太多</b>」。</span><span class="en">Caching reuses repeated prefixes; Progressive avoids loading too much at once.</span> <span class="sig">▸ 信號:內容重複 vs 內容太大。</span></div>
+<div class="p"><span class="vs">Subagent Isolation vs Extended Thinking</span> — <span class="zh">isolation 解「<b>主 context 被污染</b>」;thinking 解「<b>推理深度不夠</b>」。</span><span class="en">isolation solves context pollution; thinking gives more reasoning.</span> <span class="sig">▸ 信號:context 爆 vs 想不夠深。</span></div>
+</div>
+
+<div class="codelbl">📎 sample code — prompt caching：靜態前綴加 cache breakpoint</div>
+<pre class="code">system = [{
+    "type": "text",
+    "text": LONG_STATIC_SYSTEM_PROMPT,
+    "cache_control": {"type": "ephemeral"}   # 標這裡 = cache breakpoint
+}]
+# 規則：≥1024 token 才快取 · 順序 tools→system→messages
+#       前面任何改動 = 整個快取失效 · 最多 4 個 breakpoint · 存 1 小時
+# usage: cache_creation_input_tokens(首寫) / cache_read_input_tokens(命中)</pre>
+
 <h2 class="ch">H. Claude Code 客製化（選對工具）</h2>
 <p class="sit">情境:要客製 Claude Code 行為 · customize Claude Code</p>
 <div class="card"><table>
@@ -248,6 +331,12 @@ chat(messages, tools=[extract_schema],
 <div class="row"><span class="zh">「PR review checklist,只有 review 時才要」→</span><span class="en">"PR review checklist, only when reviewing" →</span> <b>Skill</b></div>
 <div class="row"><span class="zh">「每次存檔自動跑 linter」→</span><span class="en">"run a linter on every file save" →</span> <b>Hook</b></div>
 </div></div>
+
+<div class="diff"><b class="k">🔍 兄弟差異</b>
+<div class="p"><span class="vs">Skill vs CLAUDE.md</span> — <span class="zh"><b>匹配才載</b> vs <b>每次都載</b>。</span><span class="en">loads on match vs loads every time.</span> <span class="sig">▸ 信號:有時才相關 vs 永遠適用。</span></div>
+<div class="p"><span class="vs">Skill vs Subagent</span> — <span class="zh">skill <b>加知識到當前對話</b>;subagent <b>隔離委派另跑</b>。</span><span class="en">skill enhances current chat; subagent delegates in isolation.</span> <span class="sig">▸ 信號:增強當前 vs 委派隔離。</span></div>
+<div class="p"><span class="vs">Hook vs Skill</span> — <span class="zh">hook <b>事件觸發</b>(自動 side effect);skill <b>請求觸發</b>(提供知識)。</span><span class="en">hook fires on events; skill activates on requests.</span> <span class="sig">▸ 信號:自動化操作 vs 提供知識。</span></div>
+</div>
 
 <div class="foot"><span class="zh">策略對照 · 中英雙語 · 依 CCAR-F / Building API 課程整理 · 非官方教材</span><span class="en">Strategy Catalog · bilingual · from CCAR-F / Building API courses · not official</span></div>
 </div>
