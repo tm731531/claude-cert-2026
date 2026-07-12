@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>互動說明 · Tool Use / MCP / 策略</title><style>
+:root{--bg:#f6f4f1;--fg:#2a2320;--card:#fff;--muted:#7a706a;--line:#e7e0d9;
+ --accent:#c15f3c;--accent2:#a34a2c;--ok:#1f7a4d;--okbg:#e8f5ee;--bad:#c0392b;--badbg:#fdecea;
+ --y:#c9a227;--ybg:#fdf6e3;--bl:#2b6cb0;--blbg:#e6f0fa;}
+@media(prefers-color-scheme:dark){:root{--bg:#191614;--fg:#ece5df;--card:#241f1c;--muted:#a89a92;
+ --line:#3a322d;--accent:#e08a63;--accent2:#d0724a;--okbg:#173a2a;--badbg:#3a1f1c;--ybg:#332d14;--blbg:#17293a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;font-size:15.5px}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 70px}
+a{color:var(--accent)}.back{display:inline-block;margin-bottom:10px;font-size:.9rem}
+.top{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;padding:16px 20px;margin-bottom:12px}
+.top h1{margin:0 0 4px;font-size:1.22rem}.top p{margin:0;opacity:.94;font-size:.85rem}
+code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-size:.85em;font-family:"SF Mono",Menlo,Consolas,monospace}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tab{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:.9rem;font-weight:700;cursor:pointer;color:var(--fg)}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pane{display:none}.pane.on{display:block}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:10px 0}
+.nodes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:6px}
+.node{border:2px solid var(--line);border-radius:10px;padding:9px 12px;font-size:.84rem;font-weight:700;text-align:center;min-width:92px;transition:.25s;opacity:.5;background:var(--bg)}
+.node .ic{font-size:1.3rem;display:block;line-height:1.2}
+.node.act{opacity:1;border-color:var(--accent);box-shadow:0 0 0 3px rgba(193,95,60,.18);transform:translateY(-2px)}
+.node.from{border-color:var(--bl)}.node.to{border-color:var(--ok)}
+.flowline{text-align:center;font-weight:800;color:var(--accent);margin:8px 0 4px;font-size:.95rem;min-height:22px}
+.detail{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:8px}
+.detail .stepn{font-size:.78rem;color:var(--muted);font-weight:700}
+.detail .msg{background:#1e1e1e;color:#e6e6e6;border-radius:7px;padding:8px 11px;margin:7px 0;font-size:12px;font-family:Consolas,Menlo,monospace;overflow-x:auto;white-space:pre}
+.detail .note{font-size:.9rem}
+.badge{display:inline-block;border-radius:12px;padding:1px 10px;font-size:.78rem;font-weight:800;margin-left:6px}
+.badge.tu{background:var(--ybg);color:var(--y)}.badge.et{background:var(--okbg);color:var(--ok)}
+.ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:9px;padding:8px 15px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem}
+.btn.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.prog{font-size:.85rem;color:var(--muted)}
+.key{background:var(--ybg);border-left:4px solid var(--y);border-radius:8px;padding:9px 13px;margin:10px 0;font-size:.87rem}
+/* strategy picker */
+.q{font-size:1.05rem;font-weight:700;margin:6px 0 12px}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:7px 0;cursor:pointer;font-size:.95rem;font-family:inherit;color:var(--fg)}
+.opt:hover{border-color:var(--accent)}
+.result{background:var(--okbg);border-left:4px solid var(--ok);border-radius:10px;padding:14px 16px;margin:8px 0}
+.result .nm{font-size:1.15rem;font-weight:800;color:var(--ok)}
+.path{font-size:.82rem;color:var(--muted);margin-bottom:8px}
+.foot{color:var(--muted);font-size:.8rem;margin-top:30px;text-align:center;border-top:1px solid var(--line);padding-top:14px}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html">← 回首頁</a>
+<div class="top"><h1>🎬 互動說明</h1><p>你的弱點:Tool Use · MCP · 策略。一步步跑訊息流,看清楚每一步在幹嘛。依課程手冊。</p></div>
+
+<div class="tabs">
+<button class="tab on" data-m="tooluse">🔧 Tool Use 迴圈</button>
+<button class="tab" data-m="mcp">🔌 MCP 訊息鏈</button>
+<button class="tab" data-m="strategy">🧭 策略選擇器</button>
+</div>
+
+<!-- FLOW PANES -->
+<div class="pane on" id="pane-tooluse">
+<div class="key">🎯 <b>看重點</b>:迴圈是否繼續,<b>只看 <code>stop_reason</code></b>——<code>tool_use</code>=還要用工具(繼續)、<code>end_turn</code>=講完了(結束)。無法預測要幾個工具 → 用 <code>while</code> loop。</div>
+<div class="stage"><div class="nodes" id="nodes-tooluse"></div><div class="flowline" id="fl-tooluse"></div>
+<div class="detail" id="det-tooluse"></div>
+<div class="ctrl"><button class="btn sec" id="prev-tooluse">◀ 上一步</button><button class="btn" id="next-tooluse">下一步 ▶</button><button class="btn sec" id="auto-tooluse">▶ 自動播放</button><span class="prog" id="prog-tooluse"></span></div></div>
+</div>
+
+<div class="pane" id="pane-mcp">
+<div class="key">🎯 <b>看重點</b>:<b>MCP client = 中介橋樑,自己不執行工具</b>;真正打 GitHub API 的是 <b>MCP server</b>。你的 server 只跟 client 講話,不管背後怎麼跑。</div>
+<div class="stage"><div class="nodes" id="nodes-mcp"></div><div class="flowline" id="fl-mcp"></div>
+<div class="detail" id="det-mcp"></div>
+<div class="ctrl"><button class="btn sec" id="prev-mcp">◀ 上一步</button><button class="btn" id="next-mcp">下一步 ▶</button><button class="btn sec" id="auto-mcp">▶ 自動播放</button><span class="prog" id="prog-mcp"></span></div></div>
+</div>
+
+<div class="pane" id="pane-strategy">
+<div class="key">🎯 回答問題 → 得到<b>該用哪個命名策略</b>。練「情境 → 判準 → 選擇」的路徑。</div>
+<div class="stage"><div id="sp"></div>
+<div class="ctrl"><button class="btn sec" id="sp-reset">↺ 重來</button></div></div>
+</div>
+
+<div class="foot">互動說明 · 依 CCAR-F / Building API 課程手冊 · 純前端 · 非官方教材</div>
+</div>
+<script>
+/* ---------- shared flow engine ---------- */
+const FLOWS={
+ tooluse:{
+  nodes:[{id:'user',ic:'👤',t:'User'},{id:'server',ic:'🖥️',t:'Your Server'},{id:'claude',ic:'🤖',t:'Claude'},{id:'tool',ic:'🔧',t:'Tool'}],
+  steps:[
+   {f:'user',to:'server',msg:'"103 天後是哪天?"',note:'使用者提問,送到你的 server。',b:null},
+   {f:'server',to:'claude',msg:'client.messages.create(\n  messages=[...],\n  tools=[get_current_datetime, add_duration])',note:'server 呼叫 API,帶上可用的 tools schema。',b:null},
+   {f:'claude',to:'server',msg:'stop_reason = "tool_use"\ntool_use: get_current_datetime',note:'Claude 判斷:要先知道「今天」。回一個 tool_use block。',b:'tu'},
+   {f:'server',to:'tool',msg:'get_current_datetime() → "2026-07-12"',note:'server 端真的執行那個函式(Claude 不自己跑)。',b:null},
+   {f:'tool',to:'server',msg:'tool_result { tool_use_id, content:"2026-07-12" }',note:'結果包成 tool_result block,用 tool_use_id 配對。',b:null},
+   {f:'server',to:'claude',msg:'messages += [assistant tool_use, user tool_result]',note:'把完整 history(含結果)再送回 Claude。',b:null},
+   {f:'claude',to:'server',msg:'stop_reason = "tool_use"\ntool_use: add_duration(+103 days)',note:'又一個 tool_use!鏈式呼叫第二個工具。無法預測要幾個 → while loop。',b:'tu'},
+   {f:'server',to:'tool',msg:'add_duration_to_datetime("2026-07-12", 103, "days")\n→ "2026-10-23"',note:'再執行第二個工具。',b:null},
+   {f:'tool',to:'server',msg:'tool_result { content:"2026-10-23" }',note:'第二個結果回來。',b:null},
+   {f:'server',to:'claude',msg:'messages += tool_result',note:'再送回 Claude,帶完整 history。',b:null},
+   {f:'claude',to:'server',msg:'stop_reason = "end_turn"\n"103 天後是 2026-10-23。"',note:'沒有 tool_use 了 → break 迴圈。這是最終文字答案。',b:'et'},
+   {f:'server',to:'user',msg:'"103 天後是 2026-10-23。"',note:'server 把答案回給使用者。完成。',b:null}
+  ]},
+ mcp:{
+  nodes:[{id:'user',ic:'👤',t:'User'},{id:'server',ic:'🖥️',t:'Your Server'},{id:'client',ic:'🔌',t:'MCP Client'},{id:'mserver',ic:'📦',t:'MCP Server'},{id:'gh',ic:'🐙',t:'GitHub API'},{id:'claude',ic:'🤖',t:'Claude'}],
+  steps:[
+   {f:'user',to:'server',msg:'"列出我 open 的 PR"',note:'使用者提問。',b:null},
+   {f:'server',to:'client',msg:'client.list_tools()',note:'你的 server 問 MCP client:有哪些工具可用?',b:null},
+   {f:'client',to:'mserver',msg:'ListToolsRequest',note:'MCP client 依 MCP spec 發訊息給 MCP server。',b:null},
+   {f:'mserver',to:'client',msg:'ListToolsResult\n[ list_prs, get_pr, create_issue ... ]',note:'MCP server 回傳它提供的工具清單。',b:null},
+   {f:'server',to:'claude',msg:'messages + tools=[list_prs, ...]',note:'server 把 query + 工具送給 Claude。',b:null},
+   {f:'claude',to:'server',msg:'stop_reason="tool_use"\ntool_use: list_prs',note:'Claude 決定呼叫 list_prs。',b:'tu'},
+   {f:'server',to:'client',msg:'client.call_tool("list_prs", {...})',note:'server 請 MCP client 執行工具。',b:null},
+   {f:'client',to:'mserver',msg:'CallToolRequest',note:'client 轉成 MCP 訊息發給 server。',b:null},
+   {f:'mserver',to:'gh',msg:'GET /repos/.../pulls?state=open',note:'★ 真正打 GitHub API 的是 MCP server,不是 client、不是你。',b:null},
+   {f:'gh',to:'mserver',msg:'[ PR#12, PR#15, PR#18 ]',note:'GitHub 回資料給 MCP server。',b:null},
+   {f:'mserver',to:'client',msg:'CallToolResult { content:[...] }',note:'結果沿原鏈回傳:server → client。',b:null},
+   {f:'client',to:'server',msg:'result.content',note:'client 把結果交回你的 server。',b:null},
+   {f:'server',to:'claude',msg:'messages += tool_result',note:'server 把結果當 tool_result 送回 Claude。',b:null},
+   {f:'claude',to:'server',msg:'stop_reason="end_turn"\n"你有 3 個 open PR:#12 #15 #18"',note:'Claude 整理成答案。',b:'et'},
+   {f:'server',to:'user',msg:'"你有 3 個 open PR:#12 #15 #18"',note:'回給使用者。完成。',b:null}
+  ]}
+};
+const idx={tooluse:0,mcp:0}; const timers={};
+function buildNodes(m){
+ const wrap=document.getElementById('nodes-'+m); wrap.innerHTML='';
+ FLOWS[m].nodes.forEach(n=>{const d=document.createElement('div');d.className='node';d.id=m+'-'+n.id;
+  d.innerHTML='<span class="ic">'+n.ic+'</span>'+n.t;wrap.appendChild(d);});
+}
+function label(m,id){const n=FLOWS[m].nodes.find(x=>x.id===id);return n.ic+' '+n.t;}
+function show(m){
+ const s=FLOWS[m].steps[idx[m]];
+ FLOWS[m].nodes.forEach(n=>{const el=document.getElementById(m+'-'+n.id);el.classList.remove('act','from','to');
+   if(n.id===s.f){el.classList.add('act','from');} if(n.id===s.to){el.classList.add('act','to');}});
+ document.getElementById('fl-'+m).textContent=label(m,s.f)+'  →  '+label(m,s.to);
+ let badge=''; if(s.b==='tu')badge=' <span class="badge tu">stop_reason: tool_use ↻ 繼續</span>';
+ if(s.b==='et')badge=' <span class="badge et">stop_reason: end_turn ■ 結束</span>';
+ document.getElementById('det-'+m).innerHTML='<div class="stepn">Step '+(idx[m]+1)+' / '+FLOWS[m].steps.length+badge+'</div>'+
+   '<div class="msg">'+s.msg+'</div><div class="note">'+s.note+'</div>';
+ document.getElementById('prog-'+m).textContent=(idx[m]+1)+' / '+FLOWS[m].steps.length;
+ document.getElementById('prev-'+m).disabled=idx[m]===0;
+ document.getElementById('next-'+m).disabled=idx[m]===FLOWS[m].steps.length-1;
+}
+function wire(m){
+ buildNodes(m);show(m);
+ document.getElementById('next-'+m).onclick=()=>{if(idx[m]<FLOWS[m].steps.length-1){idx[m]++;show(m);}};
+ document.getElementById('prev-'+m).onclick=()=>{if(idx[m]>0){idx[m]--;show(m);}};
+ document.getElementById('auto-'+m).onclick=(e)=>{
+   if(timers[m]){clearInterval(timers[m]);timers[m]=null;e.target.textContent='▶ 自動播放';return;}
+   e.target.textContent='⏸ 暫停';
+   timers[m]=setInterval(()=>{if(idx[m]<FLOWS[m].steps.length-1){idx[m]++;show(m);}else{clearInterval(timers[m]);timers[m]=null;e.target.textContent='▶ 自動播放';}},1600);
+ };
+}
+wire('tooluse');wire('mcp');
+/* tabs */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+ document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+ document.getElementById('pane-'+t.dataset.m).classList.add('on');
+});
+
+/* ---------- strategy picker ---------- */
+const TREE={
+ start:{q:'這個任務,Claude 單次 call 做得完嗎?',opts:[
+   {t:'做得完(單一問答/翻譯…)',go:'r_single'},
+   {t:'做不完,要多步',go:'q_steps'}]},
+ q_steps:{q:'你能「事先把步驟畫出來」嗎?',opts:[
+   {t:'能,步驟明確可預測',go:'q_shape'},
+   {t:'不能,細節不明/要臨場決定',go:'r_agent'}]},
+ q_shape:{q:'這個 workflow 是什麼形狀?',opts:[
+   {t:'一連串依賴的步驟(A完才B)',go:'r_chain'},
+   {t:'多個獨立子任務可同時跑',go:'r_parallel'},
+   {t:'依輸入「類型」走不同處理',go:'r_route'},
+   {t:'產出 → 檢查 → 不夠好就改',go:'r_eval'}]},
+ r_single:{nm:'單一 Prompt（不需編排）',why:'單次能解就別加 agent/workflow——先簡單。'},
+ r_agent:{nm:'Agent（自主）',why:'步驟未知 → 給抽象工具(read/write/bash),讓它自己擬計畫、動態組合。彈性換可靠度,只在真需要時用。'},
+ r_chain:{nm:'Prompt Chaining',why:'拆成序列步驟,各步聚焦一件事。也用來破解「constraint 太多」的長 prompt。'},
+ r_parallel:{nm:'Parallelization',why:'同時跑多個子任務再 aggregate。focus、可獨立評估、易擴充。'},
+ r_route:{nm:'Routing',why:'先分類 input,再導到專門 pipeline(不同 prompt/tool)。'},
+ r_eval:{nm:'Evaluator-Optimizer',why:'producer 產出 → evaluator 評 → 不過就迴圈改。有「檢查+重來」就是它。'}
+};
+let spPath=[];
+function sp(node){
+ const el=document.getElementById('sp');const n=TREE[node];
+ const crumb=spPath.length?'<div class="path">'+spPath.join(' → ')+'</div>':'';
+ if(n.nm){el.innerHTML=crumb+'<div class="result"><div class="nm">✅ '+n.nm+'</div>'+n.why+'</div>';return;}
+ let h=crumb+'<div class="q">'+n.q+'</div>';
+ n.opts.forEach((o,i)=>{h+='<button class="opt" data-go="'+o.go+'" data-t="'+o.t+'">'+o.t+'</button>';});
+ el.innerHTML=h;
+ el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{spPath.push(b.dataset.t);sp(b.dataset.go);});
+}
+document.getElementById('sp-reset').onclick=()=>{spPath=[];sp('start');};
+sp('start');
+</script></body></html>
