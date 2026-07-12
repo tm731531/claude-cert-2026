@@ -40,6 +40,8 @@ body.zhonly .en{display:none}
 .dec .ex .row{margin:3px 0}
 .dec .ex .row b{color:var(--accent2)}
 @media(prefers-color-scheme:dark){.dec .ex .row b{color:var(--accent)}}
+.codelbl{font-size:.78rem;color:var(--muted);margin:0 0 4px;font-weight:700}
+.code{background:#1e1e1e;color:#e6e6e6;border-radius:8px;padding:11px 13px;overflow-x:auto;font-size:12.5px;line-height:1.5;font-family:Consolas,Menlo,monospace;margin:0 0 16px;white-space:pre}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
 <div class="top"><h1>🧭 策略對照 · Strategy Catalog</h1><p>同一個情境有<b>一整排有名字的策略</b>——架構師要知道整排,不只自己慣用那一種。英文名固定(考試用),說明可切中/英。</p></div>
@@ -73,6 +75,17 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「程式題要教學風、運動題要娛樂風」→</span><span class="en">"educational for coding topics, entertainment for sports" →</span> <b>Routing</b></div>
 <div class="row"><span class="zh">「評估金屬/塑膠/陶瓷 4 種材料各自標準」→</span><span class="en">"evaluate metal/plastic/ceramic each on its own criteria" →</span> <b>Parallelization</b></div>
 </div></div>
+
+<div class="codelbl">📎 sample code（課程）— tool-use loop：迴圈條件看 <code>stop_reason</code>，不是自然語言/次數上限</div>
+<pre class="code">def run_conversation(messages):
+    while True:
+        response = chat(messages, tools=[get_current_datetime_schema])
+        add_assistant_message(messages, response)
+        if response.stop_reason != "tool_use":   # ← 迴圈唯一判準
+            break
+        tool_results = run_tools(response)       # 跑工具、回 tool_result
+        add_user_message(messages, tool_results) # 結果當 user 訊息送回
+    return messages</pre>
 
 <h2 class="ch">B. Multi-Agent 協調模式（Anthropic 5 patterns）</h2>
 <p class="sit">情境:單一 agent 不夠,要拆多個 · when one agent isn't enough</p>
@@ -132,6 +145,17 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「多個 schema、複雜擷取、要可靠」→</span><span class="en">"multiple schemas, complex, must be reliable" →</span> <b>Tool_use + forced tool_choice</b></div>
 </div></div>
 
+<div class="codelbl">📎 sample code — 兩種結構化輸出寫法</div>
+<pre class="code"># ① 輕量：prefill 開頭 + stop 收尾 → 拿乾淨 raw JSON
+add_user_message(messages, "Generate an event bridge rule as JSON")
+add_assistant_message(messages, "```json")        # prefill
+text = chat(messages, stop_sequences=["```"])      # stop 到收尾符即停
+
+# ② 可靠：tool_use + JSON schema，強制它一定呼叫該工具
+chat(messages, tools=[extract_schema],
+     tool_choice={"type": "tool", "name": "extract_data"})
+#   "auto"=可回文字 · "any"=必呼叫某工具 · forced=指定工具先跑</pre>
+
 <h2 class="ch">E. Evaluation 評估</h2>
 <p class="sit">情境:證明 prompt/系統夠好 · prove it's good enough</p>
 <div class="card"><table>
@@ -171,6 +195,16 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「既要語意懂,又要精確關鍵字」→</span><span class="en">"need both meaning and exact keywords" →</span> <b>Hybrid + RRF</b></div>
 </div></div>
 
+<div class="codelbl">📎 sample code（課程）— size-based chunking，靠 <code>overlap</code> 保上下文</div>
+<pre class="code">def chunk_by_char(text, chunk_size=150, chunk_overlap=20):
+    chunks, start = [], 0
+    while start &lt; len(text):
+        end = min(start + chunk_size, len(text))
+        chunks.append(text[start:end])
+        # 下一塊往回退 overlap 個字元 → 避免切斷語意
+        start = end - chunk_overlap if end &lt; len(text) else len(text)
+    return chunks</pre>
+
 <h2 class="ch">G. Context 管理 / 可靠性</h2>
 <p class="sit">情境:省 context、控成本、防漂移 · save context, control cost</p>
 <div class="card"><table>
@@ -187,6 +221,14 @@ body.zhonly .en{display:none}
 <div class="row"><span class="zh">「每次都送同一份 8000-token system prompt」→</span><span class="en">"same 8000-token system prompt every request" →</span> <b>Prompt caching</b></div>
 <div class="row"><span class="zh">「多階段任務怕 context 爆掉」→</span><span class="en">"multi-phase task risks context exhaustion" →</span> <b>Subagent isolation</b></div>
 </div></div>
+
+<div class="codelbl">📎 sample code（課程）— extended thinking 的參數關係</div>
+<pre class="code">def chat(messages, ..., thinking=False, thinking_budget=1024):
+    params = {"model": model, "max_tokens": 2000, "messages": messages}
+    if thinking:
+        params["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget}
+    # ⚠️ 規則：thinking_budget 最少 1024；max_tokens 必須 &gt; thinking_budget
+    return client.messages.create(**params)</pre>
 
 <h2 class="ch">H. Claude Code 客製化（選對工具）</h2>
 <p class="sit">情境:要客製 Claude Code 行為 · customize Claude Code</p>
