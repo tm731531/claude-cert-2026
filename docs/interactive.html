@@ -43,6 +43,14 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 .result{background:var(--okbg);border-left:4px solid var(--ok);border-radius:10px;padding:14px 16px;margin:8px 0}
 .result .nm{font-size:1.15rem;font-weight:800;color:var(--ok)}
 .path{font-size:.82rem;color:var(--muted);margin-bottom:8px}
+.cblk{border-radius:8px;padding:8px 12px;margin:5px 0;font-size:.85rem;border:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;transition:.2s}
+.cblk .tag{font-size:.72rem;font-weight:800;white-space:nowrap}
+.cblk.write{background:var(--blbg);border-color:var(--bl)}.cblk.write .tag{color:var(--bl)}
+@media(prefers-color-scheme:dark){.cblk.write .tag{color:#8ab8e0}}
+.cblk.hit{background:var(--okbg);border-color:var(--ok)}.cblk.hit .tag{color:var(--ok)}
+.cblk.fresh{background:var(--ybg);border-color:var(--y)}.cblk.fresh .tag{color:var(--y)}
+.tips{background:var(--blbg);border-left:4px solid var(--bl);border-radius:9px;padding:11px 14px;margin:10px 0;font-size:.88rem}
+.tips ul{margin:6px 0;padding-left:19px}.tips li{margin:4px 0}
 .foot{color:var(--muted);font-size:.8rem;margin-top:30px;text-align:center;border-top:1px solid var(--line);padding-top:14px}
 </style></head><body><div class="wrap">
 <a class="back" href="index.html">← 回首頁</a>
@@ -52,6 +60,7 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 <button class="tab on" data-m="tooluse">🔧 Tool Use 迴圈</button>
 <button class="tab" data-m="mcp">🔌 MCP 訊息鏈</button>
 <button class="tab" data-m="strategy">🧭 策略選擇器</button>
+<button class="tab" data-m="cache">💾 Prompt Caching</button>
 </div>
 
 <!-- FLOW PANES -->
@@ -73,6 +82,24 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 <div class="key">🎯 回答問題 → 得到<b>該用哪個命名策略</b>。練「情境 → 判準 → 選擇」的路徑。</div>
 <div class="stage"><div id="sp"></div>
 <div class="ctrl"><button class="btn sec" id="sp-back">◀ 上一步</button><button class="btn sec" id="sp-reset">↺ 重來</button></div></div>
+</div>
+
+<div class="pane" id="pane-cache">
+<div class="key">🎯 <b>快取只認「前綴」</b>:順序是 <code>tools → system → messages</code>。前面不變的(system/文件/對話史)放前面 → 被快取;你<b>每次的新輸入放最後</b>。前綴<b>一字不差</b>才命中,前面一改就全失效。</div>
+<div class="stage">
+<div id="cache-stack"></div>
+<div class="detail" id="cache-det"></div>
+<div class="ctrl"><button class="btn sec" id="cache-prev">◀ 上一輪</button><button class="btn" id="cache-next">下一輪 ▶</button><span class="prog">🔵新算 · <span style="color:var(--ok)">⚡讀快取</span> · <span style="color:var(--bl)">✍️寫快取</span></span></div>
+</div>
+<div class="tips"><b>💬 像你這樣跟我對話,怎麼盡量命中?</b>
+<ul>
+<li><b>同一段對話往下接</b>,別動不動重開/<code>/clear</code>/<code>/compact</code>——那會重寫前綴、快取歸零。</li>
+<li>大段固定材料(文件/規格)<b>一次貼在早期</b>,之後一直問它;別每次重貼。</li>
+<li><b>新問題放最後,別回頭改早期訊息</b>——一改前綴,整條快取失效。</li>
+<li>別隔太久(快取約 1 小時,冷掉要重寫)。</li>
+<li>前綴要 <b>≥1024 token</b> 才會被快取。</li>
+</ul>
+<span style="color:var(--muted);font-size:.85rem">＊Claude Code / claude.ai 會自動對 system+tools+對話史做快取,你連續對話本來就會命中——真正打斷的是「清空 / 大改前面 / 放太久」。</span></div>
 </div>
 
 <div class="foot">互動說明 · 依 CCAR-F / Building API 課程手冊 · 純前端 · 非官方教材</div>
@@ -290,4 +317,32 @@ function spRender(){
 document.getElementById('sp-back').onclick=()=>{if(spNodes.length>1){spNodes.pop();spPath.pop();spRender();}};
 document.getElementById('sp-reset').onclick=()=>{spNodes=['start'];spPath=[];spRender();};
 spRender();
+
+/* ---------- prompt caching demo ---------- */
+const CACHE=[
+ {blocks:[['🧠 system prompt（8,000 tok,固定)','write','✍️ 寫入快取'],['👤 Q1:你的問題','fresh','🔵 照常算']],
+  note:'第 1 輪:system prompt 第一次送 → 寫進快取(cache_creation)。你的問題照常處理。',
+  tok:'cache_creation ≈ 8,000　·　新算 input ≈ 20'},
+ {blocks:[['🧠 system prompt（8,000 tok,固定)','hit','⚡ 讀快取'],['👤 Q1','hit','⚡ 讀快取'],['🤖 A1','hit','⚡ 讀快取'],['👤 Q2:新問題','fresh','🔵 照常算']],
+  note:'第 2 輪:system + 前面對話「一字不差」→ 直接讀快取(cache_read,便宜很多)。只有新的 Q2 要算。',
+  tok:'cache_read ≈ 8,100　·　新算 input ≈ 25'},
+ {blocks:[['🧠 system prompt','hit','⚡ 讀快取'],['👤 Q1 / 🤖 A1 / 👤 Q2 / 🤖 A2','hit','⚡ 讀快取'],['👤 Q3:又一個新問題','fresh','🔵 照常算']],
+  note:'第 3 輪:前綴越滾越長,但全命中快取。只有最新那句要算 → 對話越長,caching 省越多。',
+  tok:'cache_read ≈ 8,300　·　新算 input ≈ 22'},
+ {blocks:[['🧠 system prompt（改了一個字!)','write','✍️ 重寫快取'],['👤 前面全部對話','write','✍️ 全部重算'],['👤 Q4','fresh','🔵 照常算']],
+  note:'⚠️ 反例:只要「前綴」動一個字(改 system、或編輯了早期訊息)→ 整條快取失效,全部重算。這就是為什麼「變動的東西要放最後、別回頭改前面」。',
+  tok:'cache_creation 全部重寫 😱(白花錢)'}
+];
+let ci=0;
+function cacheShow(){
+ const s=CACHE[ci];
+ document.getElementById('cache-stack').innerHTML=s.blocks.map(b=>
+   '<div class="cblk '+b[1]+'"><span>'+b[0]+'</span><span class="tag">'+b[2]+'</span></div>').join('');
+ document.getElementById('cache-det').innerHTML='<div class="stepn">第 '+(ci+1)+' 輪 / '+CACHE.length+'</div><div class="note">'+s.note+'</div><div class="msg">'+s.tok+'</div>';
+ document.getElementById('cache-prev').disabled=ci===0;
+ document.getElementById('cache-next').disabled=ci===CACHE.length-1;
+}
+document.getElementById('cache-next').onclick=()=>{if(ci<CACHE.length-1){ci++;cacheShow();}};
+document.getElementById('cache-prev').onclick=()=>{if(ci>0){ci--;cacheShow();}};
+cacheShow();
 </script></body></html>
