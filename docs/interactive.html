@@ -49,6 +49,9 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 @media(prefers-color-scheme:dark){.cblk.write .tag{color:#8ab8e0}}
 .cblk.hit{background:var(--okbg);border-color:var(--ok)}.cblk.hit .tag{color:var(--ok)}
 .cblk.fresh{background:var(--ybg);border-color:var(--y)}.cblk.fresh .tag{color:var(--y)}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin:8px 0}
+.calc label{font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.calc input{padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);font-size:.92rem;font-family:inherit}
 .tips{background:var(--blbg);border-left:4px solid var(--bl);border-radius:9px;padding:11px 14px;margin:10px 0;font-size:.88rem}
 .tips ul{margin:6px 0;padding-left:19px}.tips li{margin:4px 0}
 .foot{color:var(--muted);font-size:.8rem;margin-top:30px;text-align:center;border-top:1px solid var(--line);padding-top:14px}
@@ -91,6 +94,20 @@ code{background:rgba(128,128,128,.16);border-radius:5px;padding:1px 5px;font-siz
 <div class="detail" id="cache-det"></div>
 <div class="ctrl"><button class="btn sec" id="cache-prev">◀ 上一輪</button><button class="btn" id="cache-next">下一輪 ▶</button><span class="prog">🔵新算 · <span style="color:var(--ok)">⚡讀快取</span> · <span style="color:var(--bl)">✍️寫快取</span></span></div>
 </div>
+<div class="stage">
+<div style="font-weight:800;margin-bottom:4px">🧮 壓縮 vs 不壓縮:誰便宜?</div>
+<div style="font-size:.82rem;color:var(--muted);margin-bottom:6px">改數字即時算。比率固定:cache read=全價×0.1、write×1.25、output 全價。</div>
+<div class="calc">
+<label>現在 context 大小 L（token）<input type="number" id="cL" value="150000"></label>
+<label>壓縮後 S（token）<input type="number" id="cS" value="15000"></label>
+<label>還要聊幾輪 N<input type="number" id="cN" value="20"></label>
+<label>壓縮摘要 output（token）<input type="number" id="cO" value="3000"></label>
+<label>input 單價（$/M）<input type="number" id="cP" value="3" step="0.1"></label>
+<label>output 單價（$/M）<input type="number" id="cOp" value="15" step="0.1"></label>
+</div>
+<div id="calc-out" class="detail"></div>
+</div>
+
 <div class="tips"><b>💬 像你這樣跟我對話,怎麼盡量命中?</b>
 <ul>
 <li><b>同一段對話往下接</b>,別動不動重開/<code>/clear</code>/<code>/compact</code>——那會重寫前綴、快取歸零。</li>
@@ -345,4 +362,23 @@ function cacheShow(){
 document.getElementById('cache-next').onclick=()=>{if(ci<CACHE.length-1){ci++;cacheShow();}};
 document.getElementById('cache-prev').onclick=()=>{if(ci>0){ci--;cacheShow();}};
 cacheShow();
+
+/* ---------- compact vs no-compact calculator ---------- */
+function calc(){
+ const g=id=>+document.getElementById(id).value;
+ const L=g('cL'),S=g('cS'),N=g('cN'),O=g('cO'),P=g('cP'),Op=g('cOp');
+ const read=P*0.1/1e6, write=P*1.25/1e6, out=Op/1e6;
+ const costNo = N*read*L;
+ const costC  = read*L + out*O + write*S + N*read*S;   // 壓縮:一次讀大+摘要output + 首寫小 + N輪讀小
+ const cheaper = costC<costNo ? '✅ 壓縮' : '✅ 不壓縮';
+ const save = Math.abs(costNo-costC);
+ const pct = costNo>0 ? Math.round(Math.abs(1-costC/costNo)*100) : 0;
+ const be = (L>S) ? (read*L + out*O + write*S)/(read*(L-S)) : NaN;
+ document.getElementById('calc-out').innerHTML=
+  '<div class="note">不壓縮 '+N+' 輪 ≈ <b>$'+costNo.toFixed(3)+'</b>　·　壓縮 ≈ <b>$'+costC.toFixed(3)+'</b></div>'+
+  '<div class="note" style="margin-top:6px;font-size:1.02rem">➡️ <b style="color:var(--ok)">'+cheaper+'</b> 便宜,省 <b>$'+save.toFixed(3)+'（'+pct+'%）</b></div>'+
+  '<div class="note" style="color:var(--muted);font-size:.85rem;margin-top:6px">損益兩平 ≈ <b>'+(isFinite(be)&&be>0?be.toFixed(1):'—')+'</b> 輪 → 聊超過這輪數,壓縮就開始划算(還沒算「肥 context 傷品質」的隱形成本)。</div>';
+}
+['cL','cS','cN','cO','cP','cOp'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+calc();
 </script></body></html>
