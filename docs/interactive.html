@@ -156,23 +156,123 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 
 /* ---------- strategy picker ---------- */
 const TREE={
- start:{q:'這個任務,Claude 單次 call 做得完嗎?',opts:[
-   {t:'做得完(單一問答/翻譯…)',go:'r_single'},
+ start:{q:'你現在要決定「哪一類」的事?',opts:[
+   {t:'A. 一個任務怎麼編排（單次做不完）',go:'q_orch'},
+   {t:'B. 要拆成多個 agent 協調',go:'q_multi'},
+   {t:'C. 提升 prompt 品質',go:'q_prompt'},
+   {t:'D. 要乾淨的結構化輸出（JSON）',go:'q_struct'},
+   {t:'E. 評估輸出好不好',go:'q_eval'},
+   {t:'F. 大文件檢索（RAG）',go:'q_rag'},
+   {t:'G. 省 context / 控成本 / 可靠性',go:'q_ctx'},
+   {t:'H. 客製 Claude Code 行為',go:'q_custom'}]},
+
+ /* A. 編排 */
+ q_orch:{q:'A｜這任務 Claude 單次 call 做得完嗎?',opts:[
+   {t:'做得完（單一問答/翻譯）',go:'r_single'},
    {t:'做不完,要多步',go:'q_steps'}]},
- q_steps:{q:'你能「事先把步驟畫出來」嗎?',opts:[
+ q_steps:{q:'A｜你能「事先把步驟畫出來」嗎?',opts:[
    {t:'能,步驟明確可預測',go:'q_shape'},
    {t:'不能,細節不明/要臨場決定',go:'r_agent'}]},
- q_shape:{q:'這個 workflow 是什麼形狀?',opts:[
-   {t:'一連串依賴的步驟(A完才B)',go:'r_chain'},
+ q_shape:{q:'A｜這 workflow 是什麼形狀?',opts:[
+   {t:'一連串依賴的步驟（A完才B）',go:'r_chain'},
    {t:'多個獨立子任務可同時跑',go:'r_parallel'},
    {t:'依輸入「類型」走不同處理',go:'r_route'},
-   {t:'產出 → 檢查 → 不夠好就改',go:'r_eval'}]},
+   {t:'產出 → 檢查 → 不夠好就改',go:'r_evalopt'}]},
+
+ /* B. 多 agent */
+ q_multi:{q:'B｜你「為什麼」要拆多個 agent?',opts:[
+   {t:'品質關鍵,要獨立把關/找錯',go:'r_genver'},
+   {t:'主線要卸載 context-heavy 的側查',go:'r_orchsub'},
+   {t:'長期、多步、獨立的大工程',go:'r_teams'},
+   {t:'事件驅動的 pipeline',go:'r_bus'},
+   {t:'研究綜合,任一發現要即時共享',go:'r_shared'}]},
+
+ /* C. prompt */
+ q_prompt:{q:'C｜一般指令沒效,缺的是什麼?',opts:[
+   {t:'格式不一致 / 抓不到 corner case',go:'r_fewshot'},
+   {t:'要它想更深、考慮多角度',go:'r_cot'},
+   {t:'任務本身講不清楚',go:'r_clear'},
+   {t:'要指定輸出的品質/結構屬性',go:'r_specA'},
+   {t:'插入的內容混雜、難分界',go:'r_xml'}]},
+
+ /* D. structured */
+ q_struct:{q:'D｜要多可靠?',opts:[
+   {t:'輕量/快,偶爾失敗可接受',go:'r_prefill'},
+   {t:'高可靠/複雜 schema,生產用',go:'r_toolschema'}]},
+
+ /* E. eval */
+ q_eval:{q:'E｜能用「程式」客觀驗證嗎?',opts:[
+   {t:'能（語法/格式 valid、關鍵字）',go:'r_codegrader'},
+   {t:'要判「品質好不好/有沒有遵循」',go:'r_modelgrader'},
+   {t:'主觀細緻,量不大',go:'r_humangrader'}]},
+
+ /* F. RAG */
+ q_rag:{q:'F｜RAG 哪一步要決定?',opts:[
+   {t:'怎麼「切」文件（chunking）',go:'q_chunk'},
+   {t:'怎麼「搜」（retrieval）',go:'q_search'}]},
+ q_chunk:{q:'F｜文件有結構保證嗎?',opts:[
+   {t:'有（markdown/HTML 標題）',go:'r_structchunk'},
+   {t:'沒有/不確定',go:'r_sizechunk'},
+   {t:'要語意分組,且吃得下複雜',go:'r_semchunk'}]},
+ q_search:{q:'F｜檢索的痛點是?',opts:[
+   {t:'純語意相似就夠',go:'r_semantic'},
+   {t:'會漏精確字/專有名詞',go:'r_bm25'},
+   {t:'排序不夠準',go:'r_rerank'},
+   {t:'chunk 抽離後失去上下文',go:'r_contextual'}]},
+
+ /* G. context */
+ q_ctx:{q:'G｜context 的痛點是?',opts:[
+   {t:'每次送重複的長前綴,重算浪費',go:'r_caching'},
+   {t:'單一檔/skill 太大,塞爆 context',go:'r_progressive'},
+   {t:'冗長探索污染主對話',go:'r_isolation'},
+   {t:'複雜推理不夠準（prompt 調不動）',go:'r_thinking'}]},
+
+ /* H. Claude Code 客製 */
+ q_custom:{q:'H｜這東西「何時該載入/觸發」?',opts:[
+   {t:'每個對話都要（永遠適用）',go:'r_claudemd'},
+   {t:'只在相關 request 才要',go:'r_skill'},
+   {t:'要隔離委派 + 不同工具權限',go:'r_subagent'},
+   {t:'在事件（存檔/工具呼叫）自動跑',go:'r_hook'},
+   {t:'要接外部工具/整合',go:'r_mcp'}]},
+
+ /* ---- 結果葉 ---- */
  r_single:{nm:'單一 Prompt（不需編排）',why:'單次能解就別加 agent/workflow——先簡單。'},
  r_agent:{nm:'Agent（自主）',why:'步驟未知 → 給抽象工具(read/write/bash),讓它自己擬計畫、動態組合。彈性換可靠度,只在真需要時用。'},
  r_chain:{nm:'Prompt Chaining',why:'拆成序列步驟,各步聚焦一件事。也用來破解「constraint 太多」的長 prompt。'},
  r_parallel:{nm:'Parallelization',why:'同時跑多個子任務再 aggregate。focus、可獨立評估、易擴充。'},
  r_route:{nm:'Routing',why:'先分類 input,再導到專門 pipeline(不同 prompt/tool)。'},
- r_eval:{nm:'Evaluator-Optimizer',why:'producer 產出 → evaluator 評 → 不過就迴圈改。有「檢查+重來」就是它。'}
+ r_evalopt:{nm:'Evaluator-Optimizer',why:'producer 產出 → evaluator 評 → 不過就迴圈改。有「檢查+重來」就是它。'},
+ r_genver:{nm:'Generator-Verifier',why:'加一個 verifier 只找錯、退回(不修),用 clean context。加一個就顯著提升品質,ROI 最高。'},
+ r_orchsub:{nm:'Orchestrator-Subagent',why:'預設起手式。主 agent 做主線,把大搜尋等髒活丟 ephemeral subagent,只收摘要。'},
+ r_teams:{nm:'Agent Teams',why:'長期多步獨立工作(大遷移),worker 常駐累積 context。子任務要真獨立否則 write-write 衝突。'},
+ r_bus:{nm:'Message Bus',why:'事件驅動 pipeline(安全告警)。難 debug,要紀律 logging。'},
+ r_shared:{nm:'Shared State',why:'研究綜合,任一 agent 發現即時可見。要明確終止條件避免反應迴圈。'},
+ r_fewshot:{nm:'Few-shot / Multi-shot',why:'給 sample input→ideal output(XML 包)。教「輸出長怎樣」、示範 corner case,比「be careful」有效。'},
+ r_cot:{nm:'Chain-of-Thought / Type-B Steps',why:'要它逐步推理、或給明確步驟,讓它考慮多角度再答。'},
+ r_clear:{nm:'Being Clear & Direct',why:'第一行用 action verb 直指任務(Write/Identify/Generate)。'},
+ r_specA:{nm:'Being Specific（Type-A Attributes）',why:'列出輸出該有的品質/格式/長度。幾乎每個 prompt 都該有。'},
+ r_xml:{nm:'XML Structuring',why:'用描述性標籤(&lt;sales_records&gt;)分隔插入的內容區塊,幫模型分界。'},
+ r_prefill:{nm:'Prefill + Stop Sequence',why:'prefill ```json + stop ```。快、簡單,適合輕量擷取/複製。盡力非保證。'},
+ r_toolschema:{nm:'Tool Use + JSON Schema',why:'最可靠、消語法錯;配 tool_choice forced 保證呼叫。只防語法不防語意。'},
+ r_codegrader:{nm:'Code Grader',why:'程式檢查:語法 valid、長度、關鍵字、可讀性。客觀但淺。'},
+ r_modelgrader:{nm:'Model Grader',why:'另一個 AI 模型評分;要它給 strengths/weaknesses/reasoning+score(否則給中庸分)。最有彈性。'},
+ r_humangrader:{nm:'Human Grader',why:'人審;最彈性但耗時,適合量不大的細緻判斷。'},
+ r_structchunk:{nm:'Structure-based Chunking',why:'依標題/段落切;需結構化文件(markdown/HTML)。'},
+ r_sizechunk:{nm:'Size-based Chunking + Overlap',why:'等長切、最穩 fallback;用 overlap 保上下文,任何文件都能用。'},
+ r_semchunk:{nm:'Semantic Chunking',why:'NLP 依語意相似分組;最進階、最複雜。'},
+ r_semantic:{nm:'Semantic Search（embeddings）',why:'向量 cosine 相似;懂語意但可能漏精確字。'},
+ r_bm25:{nm:'BM25 → Hybrid + RRF',why:'BM25 抓精確字;和語意搜尋並行、用 Reciprocal Rank Fusion 合併最佳。'},
+ r_rerank:{nm:'Reranking',why:'檢索後用 LLM 依相關性重排(用 doc id 省 token)。增準度、加延遲。'},
+ r_contextual:{nm:'Contextual Retrieval',why:'embed 前先給每個 chunk 加「它在原文的情境」,防抽離後失去上下文。'},
+ r_caching:{nm:'Prompt Caching',why:'重複的 system/tool 前綴加 cache breakpoint(≥1024 token,存 1hr)。'},
+ r_progressive:{nm:'Progressive Disclosure',why:'主檔 <500 行,細節拆附屬檔,Claude 需要才載(scripts run-not-read)。'},
+ r_isolation:{nm:'Subagent Isolation',why:'冗長探索丟 subagent、只回摘要,保主 context 乾淨。'},
+ r_thinking:{nm:'Extended Thinking',why:'開推理預算(≥1024,max_tokens 要更大);prompt 調不動才用。'},
+ r_claudemd:{nm:'CLAUDE.md',why:'always-on,每個對話都載。專案標準/約束/風格。'},
+ r_skill:{nm:'Skill',why:'request-driven,匹配才自動載(只載 name+description 省 context)。任務專屬知識。'},
+ r_subagent:{nm:'Subagent',why:'隔離 context 委派;要不同工具權限、要隔離。注意:subagent 不自動繼承 skills。'},
+ r_hook:{nm:'Hook',why:'event-driven,存檔/工具呼叫時 fire。自動 side effect/驗證(每次存檔跑 linter)。'},
+ r_mcp:{nm:'MCP Server',why:'外部工具/整合;把 tool 定義與執行搬到 server(不同類別)。'}
 };
 let spPath=[];
 function sp(node){
